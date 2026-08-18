@@ -1,0 +1,1 @@
+EV battery passport platform for traceability, health prediction, anomaly detection, safety, and lifecycle management.
