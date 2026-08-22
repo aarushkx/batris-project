@@ -1,0 +1,57 @@
+{
+  "variant": "full",
+  "features": [
+    "cc_capacity_frac",
+    "cv_capacity_frac",
+    "cc_cv_ah_ratio",
+    "cc_time_fraction",
+    "ch_temp_max_c",
+    "ambient_temp_c"
+  ],
+  "n_features": 6,
+  "n_training_cycles": 636,
+  "training_batteries": [
+    "B0005",
+    "B0006",
+    "B0007",
+    "B0018"
+  ],
+  "training_formats": [
+    "NASA_18650_LCO_2AH"
+  ],
+  "soh_train_range": [
+    0.576909165798125,
+    1.017668795502799
+  ],
+  "quantiles": [
+    0.05,
+    0.5,
+    0.95
+  ],
+  "params": {
+    "n_estimators": 500,
+    "max_depth": 4,
+    "learning_rate": 0.04,
+    "subsample": 0.85,
+    "colsample_bytree": 0.85,
+    "min_child_weight": 5,
+    "reg_lambda": 2.0,
+    "reg_alpha": 0.1,
+    "random_state": 42,
+    "n_jobs": 4
+  },
+  "training_data_sha256": "4ca82a0e6ecc4a6e",
+  "interval_calibration_factor": 6.3318373111357085,
+  "tier": "summary",
+  "tier_rank": 3,
+  "tier_display_name": "Charge summary (hand-entered)",
+  "tier_reliable": true,
+  "validation": {
+    "method": "leave-one-battery-out cross-validation",
+    "mae_soh_percentage_points": 2.94,
+    "rmse": 0.041,
+    "r2": 0.8295,
+    "worst_battery_mae_soh_points": 5.871,
+    "n_batteries": 4
+  }
+}

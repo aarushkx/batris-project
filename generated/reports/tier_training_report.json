@@ -1,0 +1,192 @@
+{
+  "tiers": {
+    "telemetry_eis": {
+      "display_name": "Charge telemetry with impedance diagnostics",
+      "rank": 1,
+      "n_features": 15,
+      "features": [
+        "cc_capacity_frac",
+        "cv_capacity_frac",
+        "cc_cv_ah_ratio",
+        "cc_time_fraction",
+        "dvdt_cc_per_frac",
+        "v_norm_at_cc_end",
+        "ohmic_r_norm",
+        "re_norm",
+        "rct_norm",
+        "ch_temp_max_c",
+        "ch_temp_rise_c",
+        "ch_temp_mean_c",
+        "ch_thermal_dose_c_h",
+        "ch_frac_above_warn",
+        "ambient_temp_c"
+      ],
+      "reliable": true,
+      "validation": {
+        "per_battery": {
+          "B0005": {
+            "n_cycles": 168,
+            "mae_soh_points": 2.028,
+            "r2": 0.9204
+          },
+          "B0006": {
+            "n_cycles": 168,
+            "mae_soh_points": 4.997,
+            "r2": 0.7885
+          },
+          "B0007": {
+            "n_cycles": 168,
+            "mae_soh_points": 1.065,
+            "r2": 0.9739
+          },
+          "B0018": {
+            "n_cycles": 132,
+            "mae_soh_points": 2.553,
+            "r2": 0.8292
+          }
+        },
+        "mae": 0.02666857505838403,
+        "mae_soh_points": 2.667,
+        "rmse": 0.0364,
+        "r2": 0.8655,
+        "worst_battery_mae_soh_points": 4.997
+      },
+      "interval_calibration_factor": 9.077520394482907
+    },
+    "telemetry": {
+      "display_name": "Charge telemetry",
+      "rank": 2,
+      "n_features": 13,
+      "features": [
+        "cc_capacity_frac",
+        "cv_capacity_frac",
+        "cc_cv_ah_ratio",
+        "cc_time_fraction",
+        "dvdt_cc_per_frac",
+        "v_norm_at_cc_end",
+        "ohmic_r_norm",
+        "ch_temp_max_c",
+        "ch_temp_rise_c",
+        "ch_temp_mean_c",
+        "ch_thermal_dose_c_h",
+        "ch_frac_above_warn",
+        "ambient_temp_c"
+      ],
+      "reliable": true,
+      "validation": {
+        "per_battery": {
+          "B0005": {
+            "n_cycles": 168,
+            "mae_soh_points": 1.85,
+            "r2": 0.9347
+          },
+          "B0006": {
+            "n_cycles": 168,
+            "mae_soh_points": 5.026,
+            "r2": 0.7786
+          },
+          "B0007": {
+            "n_cycles": 168,
+            "mae_soh_points": 1.028,
+            "r2": 0.9729
+          },
+          "B0018": {
+            "n_cycles": 132,
+            "mae_soh_points": 3.187,
+            "r2": 0.7554
+          }
+        },
+        "mae": 0.027492049489187972,
+        "mae_soh_points": 2.749,
+        "rmse": 0.0378,
+        "r2": 0.8553,
+        "worst_battery_mae_soh_points": 5.026
+      },
+      "interval_calibration_factor": 8.44160092357259
+    },
+    "summary": {
+      "display_name": "Charge summary (hand-entered)",
+      "rank": 3,
+      "n_features": 6,
+      "features": [
+        "cc_capacity_frac",
+        "cv_capacity_frac",
+        "cc_cv_ah_ratio",
+        "cc_time_fraction",
+        "ch_temp_max_c",
+        "ambient_temp_c"
+      ],
+      "reliable": true,
+      "validation": {
+        "per_battery": {
+          "B0005": {
+            "n_cycles": 168,
+            "mae_soh_points": 2.152,
+            "r2": 0.8955
+          },
+          "B0006": {
+            "n_cycles": 168,
+            "mae_soh_points": 5.871,
+            "r2": 0.7135
+          },
+          "B0007": {
+            "n_cycles": 168,
+            "mae_soh_points": 1.074,
+            "r2": 0.9712
+          },
+          "B0018": {
+            "n_cycles": 132,
+            "mae_soh_points": 2.587,
+            "r2": 0.8468
+          }
+        },
+        "mae": 0.029399912016640935,
+        "mae_soh_points": 2.94,
+        "rmse": 0.041,
+        "r2": 0.8295,
+        "worst_battery_mae_soh_points": 5.871
+      },
+      "interval_calibration_factor": 6.3318373111357085
+    },
+    "minimal": {
+      "display_name": "Minimal (charge phase split only)",
+      "rank": 4,
+      "n_features": 2,
+      "features": [
+        "cc_cv_ah_ratio",
+        "cc_time_fraction"
+      ],
+      "reliable": false,
+      "validation": {
+        "per_battery": {
+          "B0005": {
+            "n_cycles": 168,
+            "mae_soh_points": 4.272,
+            "r2": 0.6332
+          },
+          "B0006": {
+            "n_cycles": 168,
+            "mae_soh_points": 13.81,
+            "r2": -0.8244
+          },
+          "B0007": {
+            "n_cycles": 168,
+            "mae_soh_points": 1.349,
+            "r2": 0.798
+          },
+          "B0018": {
+            "n_cycles": 132,
+            "mae_soh_points": 3.297,
+            "r2": 0.5099
+          }
+        },
+        "mae": 0.05817205446547883,
+        "mae_soh_points": 5.817,
+        "rmse": 0.0971,
+        "r2": 0.0438,
+        "worst_battery_mae_soh_points": 13.81
+      },
+      "interval_calibration_factor": 4.628165780376287
+    }
+  }
+}
