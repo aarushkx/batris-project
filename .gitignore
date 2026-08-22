@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+generated/keys/
+generated/passports/
+data/raw/generic_csv/
+.DS_Store

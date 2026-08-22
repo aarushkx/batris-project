@@ -1,0 +1,1 @@
+**BATRIS — Battery Traceability & Reliability Intelligence System for EV battery passport, health prediction, anomaly detection, safety, and lifecycle management.**
