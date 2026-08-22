@@ -1,0 +1,373 @@
+{
+  "n_cycles": 636,
+  "batteries": [
+    "B0005",
+    "B0006",
+    "B0007",
+    "B0018"
+  ],
+  "variants": {
+    "full": {
+      "n_features": 25,
+      "features": [
+        "cc_capacity_frac",
+        "cv_capacity_frac",
+        "cc_cv_ah_ratio",
+        "cc_time_fraction",
+        "total_charge_frac",
+        "charge_time_1c_equiv",
+        "mean_charge_c_rate",
+        "dvdt_cc_per_frac",
+        "v_norm_at_cc_end",
+        "ohmic_r_norm",
+        "re_norm",
+        "rct_norm",
+        "re_growth_ratio",
+        "rct_growth_ratio",
+        "ch_temp_max_c",
+        "ch_temp_rise_c",
+        "ch_temp_mean_c",
+        "ch_thermal_dose_c_h",
+        "ch_frac_above_warn",
+        "ambient_temp_c",
+        "cycle_index",
+        "equivalent_full_cycles",
+        "calendar_age_days",
+        "mean_rest_h",
+        "cum_thermal_dose_c_h"
+      ],
+      "lobo": {
+        "per_battery": {
+          "B0005": {
+            "mae": 0.013644832189471101,
+            "rmse": 0.01861567851008948,
+            "r2": 0.9615391927159423,
+            "max_abs_error": 0.04532277468437462,
+            "bias": 0.010132245510256096,
+            "mae_soh_percentage_points": 1.36448321894711,
+            "n_cycles": 168,
+            "interval_coverage": 0.9583333333333334
+          },
+          "B0006": {
+            "mae": 0.02964205451919462,
+            "rmse": 0.040579328185619455,
+            "r2": 0.8956889043709637,
+            "max_abs_error": 0.10876957589275049,
+            "bias": -0.011912117094495998,
+            "mae_soh_percentage_points": 2.964205451919462,
+            "n_cycles": 168,
+            "interval_coverage": 0.5535714285714286
+          },
+          "B0007": {
+            "mae": 0.010274965183322432,
+            "rmse": 0.012416981657205716,
+            "r2": 0.9760502449178122,
+            "max_abs_error": 0.04182829414624212,
+            "bias": -0.008300692370822635,
+            "mae_soh_percentage_points": 1.0274965183322433,
+            "n_cycles": 168,
+            "interval_coverage": 0.5416666666666666
+          },
+          "B0018": {
+            "mae": 0.029873435822458425,
+            "rmse": 0.0409619333066335,
+            "r2": 0.7180922729253758,
+            "max_abs_error": 0.09462911008498875,
+            "bias": 0.026174099674662273,
+            "mae_soh_percentage_points": 2.9873435822458423,
+            "n_cycles": 132,
+            "interval_coverage": 0.6439393939393939
+          }
+        },
+        "pooled": {
+          "mae": 0.020348560764808996,
+          "rmse": 0.030256879749235636,
+          "r2": 0.9071646704871542,
+          "max_abs_error": 0.10876957589275049,
+          "bias": 0.0027695698311398006,
+          "mae_soh_percentage_points": 2.0348560764808994,
+          "interval_coverage_uncalibrated": 0.6761006289308176
+        }
+      },
+      "random_split_baseline": {
+        "mae": 0.00441225802066458,
+        "rmse": 0.00630180269701551,
+        "r2": 0.9954194033132442,
+        "max_abs_error": 0.024379303786931095,
+        "bias": -0.00012554408876981268,
+        "mae_soh_percentage_points": 0.441225802066458
+      },
+      "interval_calibration": {
+        "factor": 3.2213308775594225,
+        "coverage_before": 0.6761006289308176,
+        "coverage_after": 0.89937106918239
+      },
+      "feature_importance": {
+        "cum_thermal_dose_c_h": 0.66522,
+        "total_charge_frac": 0.09127,
+        "charge_time_1c_equiv": 0.07618,
+        "equivalent_full_cycles": 0.05062,
+        "cycle_index": 0.03841,
+        "cc_capacity_frac": 0.02719,
+        "mean_charge_c_rate": 0.01282,
+        "rct_growth_ratio": 0.00947,
+        "dvdt_cc_per_frac": 0.00706,
+        "mean_rest_h": 0.00534,
+        "cc_time_fraction": 0.00334,
+        "ohmic_r_norm": 0.00316,
+        "cc_cv_ah_ratio": 0.00244,
+        "cv_capacity_frac": 0.00215,
+        "calendar_age_days": 0.00145,
+        "rct_norm": 0.00134,
+        "v_norm_at_cc_end": 0.00063,
+        "re_norm": 0.0006,
+        "ch_temp_rise_c": 0.00043,
+        "re_growth_ratio": 0.00031,
+        "ch_temp_max_c": 0.00031,
+        "ch_thermal_dose_c_h": 0.00019,
+        "ch_temp_mean_c": 0.0001,
+        "ambient_temp_c": 0.0,
+        "ch_frac_above_warn": 0.0
+      },
+      "metadata": {
+        "variant": "full",
+        "features": [
+          "cc_capacity_frac",
+          "cv_capacity_frac",
+          "cc_cv_ah_ratio",
+          "cc_time_fraction",
+          "total_charge_frac",
+          "charge_time_1c_equiv",
+          "mean_charge_c_rate",
+          "dvdt_cc_per_frac",
+          "v_norm_at_cc_end",
+          "ohmic_r_norm",
+          "re_norm",
+          "rct_norm",
+          "re_growth_ratio",
+          "rct_growth_ratio",
+          "ch_temp_max_c",
+          "ch_temp_rise_c",
+          "ch_temp_mean_c",
+          "ch_thermal_dose_c_h",
+          "ch_frac_above_warn",
+          "ambient_temp_c",
+          "cycle_index",
+          "equivalent_full_cycles",
+          "calendar_age_days",
+          "mean_rest_h",
+          "cum_thermal_dose_c_h"
+        ],
+        "n_features": 25,
+        "n_training_cycles": 636,
+        "training_batteries": [
+          "B0005",
+          "B0006",
+          "B0007",
+          "B0018"
+        ],
+        "training_formats": [
+          "NASA_18650_LCO_2AH"
+        ],
+        "soh_train_range": [
+          0.576909165798125,
+          1.017668795502799
+        ],
+        "quantiles": [
+          0.05,
+          0.5,
+          0.95
+        ],
+        "params": {
+          "n_estimators": 500,
+          "max_depth": 4,
+          "learning_rate": 0.04,
+          "subsample": 0.85,
+          "colsample_bytree": 0.85,
+          "min_child_weight": 5,
+          "reg_lambda": 2.0,
+          "reg_alpha": 0.1,
+          "random_state": 42,
+          "n_jobs": 4
+        },
+        "training_data_sha256": "51a0076658560531",
+        "interval_calibration_factor": 3.2213308775594225,
+        "interval_calibration_basis": "leave-one-battery-out residuals",
+        "validation": {
+          "method": "leave-one-battery-out cross-validation",
+          "mae_soh_percentage_points": 2.03,
+          "rmse": 0.0303,
+          "r2": 0.907,
+          "n_batteries": 4,
+          "worst_battery_mae_soh_points": 2.99
+        }
+      }
+    },
+    "provenance_free": {
+      "n_features": 15,
+      "features": [
+        "cc_capacity_frac",
+        "cv_capacity_frac",
+        "cc_cv_ah_ratio",
+        "cc_time_fraction",
+        "dvdt_cc_per_frac",
+        "v_norm_at_cc_end",
+        "ohmic_r_norm",
+        "re_norm",
+        "rct_norm",
+        "ch_temp_max_c",
+        "ch_temp_rise_c",
+        "ch_temp_mean_c",
+        "ch_thermal_dose_c_h",
+        "ch_frac_above_warn",
+        "ambient_temp_c"
+      ],
+      "lobo": {
+        "per_battery": {
+          "B0005": {
+            "mae": 0.020275804882382356,
+            "rmse": 0.02678583859121179,
+            "r2": 0.9203710204155366,
+            "max_abs_error": 0.06403311927160582,
+            "bias": 0.01656061141633571,
+            "mae_soh_percentage_points": 2.0275804882382356,
+            "n_cycles": 168,
+            "interval_coverage": 0.6071428571428571
+          },
+          "B0006": {
+            "mae": 0.049969294875265025,
+            "rmse": 0.05777772872630876,
+            "r2": 0.7885334244326937,
+            "max_abs_error": 0.11055954176336791,
+            "bias": -0.019173894657250494,
+            "mae_soh_percentage_points": 4.9969294875265025,
+            "n_cycles": 168,
+            "interval_coverage": 0.5238095238095238
+          },
+          "B0007": {
+            "mae": 0.010653887354177858,
+            "rmse": 0.012971552457395489,
+            "r2": 0.9738631701880865,
+            "max_abs_error": 0.046892928796582356,
+            "bias": 0.006830991560641605,
+            "mae_soh_percentage_points": 1.0653887354177858,
+            "n_cycles": 168,
+            "interval_coverage": 0.6845238095238095
+          },
+          "B0018": {
+            "mae": 0.02553169622989092,
+            "rmse": 0.03187969086608083,
+            "r2": 0.8292446613889706,
+            "max_abs_error": 0.07511217322570318,
+            "bias": 0.018188729949001427,
+            "mae_soh_percentage_points": 2.553169622989092,
+            "n_cycles": 132,
+            "interval_coverage": 0.6212121212121212
+          }
+        },
+        "pooled": {
+          "mae": 0.02666857505838403,
+          "rmse": 0.03642401685709902,
+          "r2": 0.865463327714286,
+          "max_abs_error": 0.11055954176336791,
+          "bias": 0.004889131055003606,
+          "mae_soh_percentage_points": 2.666857505838403,
+          "interval_coverage_uncalibrated": 0.6084905660377359
+        }
+      },
+      "random_split_baseline": {
+        "mae": 0.0053930857179126535,
+        "rmse": 0.0076665956686890226,
+        "r2": 0.9932205014833824,
+        "max_abs_error": 0.040959605839075985,
+        "bias": 0.0010288814652076768,
+        "mae_soh_percentage_points": 0.5393085717912653
+      },
+      "interval_calibration": {
+        "factor": 9.077520394482907,
+        "coverage_before": 0.6084905660377359,
+        "coverage_after": 0.89937106918239
+      },
+      "feature_importance": {
+        "cc_capacity_frac": 0.4843,
+        "cc_cv_ah_ratio": 0.35456,
+        "cv_capacity_frac": 0.06287,
+        "dvdt_cc_per_frac": 0.04377,
+        "ch_thermal_dose_c_h": 0.01891,
+        "ohmic_r_norm": 0.00991,
+        "rct_norm": 0.00528,
+        "ch_temp_max_c": 0.00464,
+        "re_norm": 0.00414,
+        "v_norm_at_cc_end": 0.00342,
+        "cc_time_fraction": 0.00306,
+        "ch_temp_rise_c": 0.00273,
+        "ch_temp_mean_c": 0.00241,
+        "ch_frac_above_warn": 0.0,
+        "ambient_temp_c": 0.0
+      },
+      "metadata": {
+        "variant": "provenance_free",
+        "features": [
+          "cc_capacity_frac",
+          "cv_capacity_frac",
+          "cc_cv_ah_ratio",
+          "cc_time_fraction",
+          "dvdt_cc_per_frac",
+          "v_norm_at_cc_end",
+          "ohmic_r_norm",
+          "re_norm",
+          "rct_norm",
+          "ch_temp_max_c",
+          "ch_temp_rise_c",
+          "ch_temp_mean_c",
+          "ch_thermal_dose_c_h",
+          "ch_frac_above_warn",
+          "ambient_temp_c"
+        ],
+        "n_features": 15,
+        "n_training_cycles": 636,
+        "training_batteries": [
+          "B0005",
+          "B0006",
+          "B0007",
+          "B0018"
+        ],
+        "training_formats": [
+          "NASA_18650_LCO_2AH"
+        ],
+        "soh_train_range": [
+          0.576909165798125,
+          1.017668795502799
+        ],
+        "quantiles": [
+          0.05,
+          0.5,
+          0.95
+        ],
+        "params": {
+          "n_estimators": 500,
+          "max_depth": 4,
+          "learning_rate": 0.04,
+          "subsample": 0.85,
+          "colsample_bytree": 0.85,
+          "min_child_weight": 5,
+          "reg_lambda": 2.0,
+          "reg_alpha": 0.1,
+          "random_state": 42,
+          "n_jobs": 4
+        },
+        "training_data_sha256": "9bea694511b85f2a",
+        "interval_calibration_factor": 9.077520394482907,
+        "interval_calibration_basis": "leave-one-battery-out residuals",
+        "validation": {
+          "method": "leave-one-battery-out cross-validation",
+          "mae_soh_percentage_points": 2.67,
+          "rmse": 0.0364,
+          "r2": 0.865,
+          "n_batteries": 4,
+          "worst_battery_mae_soh_points": 5.0
+        }
+      }
+    }
+  }
+}

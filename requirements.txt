@@ -1,0 +1,17 @@
+# Numerical stack
+numpy==2.3.5
+pandas==2.3.3
+scipy>=1.10
+
+# Models
+scikit-learn==1.8.0
+xgboost==3.1.3
+joblib==1.5.3
+
+# API and crypto
+fastapi>=0.110
+uvicorn>=0.29
+cryptography>=41.0
+
+# Evaluation plots
+matplotlib>=3.7

@@ -1,0 +1,73 @@
+{
+  "variant": "full",
+  "features": [
+    "cc_capacity_frac",
+    "cv_capacity_frac",
+    "cc_cv_ah_ratio",
+    "cc_time_fraction",
+    "total_charge_frac",
+    "charge_time_1c_equiv",
+    "mean_charge_c_rate",
+    "dvdt_cc_per_frac",
+    "v_norm_at_cc_end",
+    "ohmic_r_norm",
+    "re_norm",
+    "rct_norm",
+    "re_growth_ratio",
+    "rct_growth_ratio",
+    "ch_temp_max_c",
+    "ch_temp_rise_c",
+    "ch_temp_mean_c",
+    "ch_thermal_dose_c_h",
+    "ch_frac_above_warn",
+    "ambient_temp_c",
+    "cycle_index",
+    "equivalent_full_cycles",
+    "calendar_age_days",
+    "mean_rest_h",
+    "cum_thermal_dose_c_h"
+  ],
+  "n_features": 25,
+  "n_training_cycles": 636,
+  "training_batteries": [
+    "B0005",
+    "B0006",
+    "B0007",
+    "B0018"
+  ],
+  "training_formats": [
+    "NASA_18650_LCO_2AH"
+  ],
+  "soh_train_range": [
+    0.576909165798125,
+    1.017668795502799
+  ],
+  "quantiles": [
+    0.05,
+    0.5,
+    0.95
+  ],
+  "params": {
+    "n_estimators": 500,
+    "max_depth": 4,
+    "learning_rate": 0.04,
+    "subsample": 0.85,
+    "colsample_bytree": 0.85,
+    "min_child_weight": 5,
+    "reg_lambda": 2.0,
+    "reg_alpha": 0.1,
+    "random_state": 42,
+    "n_jobs": 4
+  },
+  "training_data_sha256": "51a0076658560531",
+  "interval_calibration_factor": 3.2213308775594225,
+  "interval_calibration_basis": "leave-one-battery-out residuals",
+  "validation": {
+    "method": "leave-one-battery-out cross-validation",
+    "mae_soh_percentage_points": 2.03,
+    "rmse": 0.0303,
+    "r2": 0.907,
+    "n_batteries": 4,
+    "worst_battery_mae_soh_points": 2.99
+  }
+}
