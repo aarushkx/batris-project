@@ -1,0 +1,123 @@
+{
+  "metadata": {
+    "feature_set": "full",
+    "features": [
+      "cc_capacity_frac",
+      "cv_capacity_frac",
+      "cc_cv_ah_ratio",
+      "cc_time_fraction",
+      "total_charge_frac",
+      "mean_charge_c_rate",
+      "dvdt_cc_per_frac",
+      "v_norm_at_cc_end",
+      "ch_temp_max_c",
+      "ch_temp_rise_c",
+      "ch_thermal_dose_c_h",
+      "ohmic_r_norm",
+      "re_norm",
+      "rct_norm",
+      "audit_dis_temp_max_c",
+      "audit_dis_temp_rise_c",
+      "audit_min_v_norm",
+      "audit_mean_dis_c_rate",
+      "audit_dis_thermal_dose_c_h"
+    ],
+    "n_training_cycles": 636,
+    "contamination": 0.02,
+    "score_threshold": -5.2475385148298415e-17,
+    "training_batteries": [
+      "B0005",
+      "B0006",
+      "B0007",
+      "B0018"
+    ]
+  },
+  "charge_only_metadata": {
+    "feature_set": "charge_only",
+    "features": [
+      "cc_capacity_frac",
+      "cv_capacity_frac",
+      "cc_cv_ah_ratio",
+      "cc_time_fraction",
+      "total_charge_frac",
+      "mean_charge_c_rate",
+      "dvdt_cc_per_frac",
+      "v_norm_at_cc_end",
+      "ch_temp_max_c",
+      "ch_temp_rise_c",
+      "ch_thermal_dose_c_h",
+      "ohmic_r_norm"
+    ],
+    "n_training_cycles": 636,
+    "contamination": 0.02,
+    "score_threshold": 1.452830911130576e-17,
+    "training_batteries": [
+      "B0005",
+      "B0006",
+      "B0007",
+      "B0018"
+    ]
+  },
+  "validation": {
+    "false_alarm_rate": 0.09433962264150944,
+    "n_clean_cycles": 636,
+    "mean_recall": 0.9666666666666668,
+    "per_fault": {
+      "thermal_runaway_precursor": {
+        "n_injected": 60,
+        "recall": 1.0,
+        "critical_rate": 1.0,
+        "mean_score": 98.15,
+        "detected_by": {
+          "rule": 170,
+          "statistical": 57,
+          "trajectory": 0
+        }
+      },
+      "resistance_fault": {
+        "n_injected": 60,
+        "recall": 0.9666666666666667,
+        "critical_rate": 0.9666666666666667,
+        "mean_score": 95.76666666666667,
+        "detected_by": {
+          "rule": 161,
+          "statistical": 6,
+          "trajectory": 57
+        }
+      },
+      "charge_interruption": {
+        "n_injected": 60,
+        "recall": 1.0,
+        "critical_rate": 0.06666666666666667,
+        "mean_score": 60.96437447171969,
+        "detected_by": {
+          "rule": 105,
+          "statistical": 25,
+          "trajectory": 0
+        }
+      },
+      "deep_discharge": {
+        "n_injected": 60,
+        "recall": 1.0,
+        "critical_rate": 1.0,
+        "mean_score": 91.75,
+        "detected_by": {
+          "rule": 88,
+          "statistical": 7,
+          "trajectory": 0
+        }
+      },
+      "over_rate_charging": {
+        "n_injected": 60,
+        "recall": 0.8666666666666667,
+        "critical_rate": 0.03333333333333333,
+        "mean_score": 51.766666666666666,
+        "detected_by": {
+          "rule": 90,
+          "statistical": 15,
+          "trajectory": 0
+        }
+      }
+    }
+  }
+}

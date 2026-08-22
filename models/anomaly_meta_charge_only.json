@@ -1,0 +1,26 @@
+{
+  "feature_set": "charge_only",
+  "features": [
+    "cc_capacity_frac",
+    "cv_capacity_frac",
+    "cc_cv_ah_ratio",
+    "cc_time_fraction",
+    "total_charge_frac",
+    "mean_charge_c_rate",
+    "dvdt_cc_per_frac",
+    "v_norm_at_cc_end",
+    "ch_temp_max_c",
+    "ch_temp_rise_c",
+    "ch_thermal_dose_c_h",
+    "ohmic_r_norm"
+  ],
+  "n_training_cycles": 636,
+  "contamination": 0.02,
+  "score_threshold": 1.452830911130576e-17,
+  "training_batteries": [
+    "B0005",
+    "B0006",
+    "B0007",
+    "B0018"
+  ]
+}
