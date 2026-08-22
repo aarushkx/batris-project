@@ -127,8 +127,8 @@ def main(argv=None) -> int:
             logger.info("  -> marked INDICATIVE ONLY; no reuse grade is issued "
                         "from this tier.")
 
-        # Final model on all cells, with intervals calibrated from held-out
-        # residuals for this specific tier.
+       # Trains the final model using all available cells.
+       # Prediction intervals are calibrated using validation errors from this tier.
         model = SOHModel(variant="full")
         model.features = list(tier.features)
         model.fit(df)
