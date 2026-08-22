@@ -342,7 +342,7 @@ def cmd_formats(args) -> int:
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(
         prog="batris",
-        description="Battery Health & Second-Life Passport Platform CLI",
+        description="Battery Traceability & Reliability Intelligence System CLI",
     )
     parser.add_argument("--data", type=Path, default=CYCLES_PATH)
     parser.add_argument("--models", type=Path, default=MODELS_DIR)
