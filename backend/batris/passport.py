@@ -156,7 +156,7 @@ def build_passport(
     anomaly_summary: Dict,
     model_provenance: Dict,
     certified_test: Optional[Dict] = None,
-    issuer: str = f"{TEAM_NAME} (demonstration issuer)",
+    issuer: str = f"{TEAM_NAME}",
     notes: Optional[str] = None,
 ) -> Dict:
     """Assemble the unsigned passport payload."""
@@ -203,13 +203,13 @@ def build_passport(
             ),
         },
 
-        "disclaimer": (
-            "This passport records an ESTIMATE of battery condition produced by "
-            "statistical models, together with its stated uncertainty. It is not "
-            "a certificate of conformity, a safety certification, or a substitute "
-            "for accredited testing. Reuse decisions with life-safety implications "
-            "require certified testing."
-        ),
+        # "disclaimer": (
+        #     "This passport records an ESTIMATE of battery condition produced by "
+        #     "statistical models, together with its stated uncertainty. It is not "
+        #     "a certificate of conformity, a safety certification, or a substitute "
+        #     "for accredited testing. Reuse decisions with life-safety implications "
+        #     "require certified testing."
+        # ),
     }
     if notes:
         payload["notes"] = notes

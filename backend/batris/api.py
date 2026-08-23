@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import logging
+import uuid
 from pathlib import Path
 from typing import Dict, Optional
 
@@ -12,7 +13,7 @@ import pandas as pd
 import uvicorn
 from fastapi import Body, FastAPI, HTTPException, Query, Request
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from .assess import BatteryAssessor
@@ -31,7 +32,8 @@ from .passport import (
     load_public_key,
     verify_passport,
 )
-from .paths import CYCLES_PATH, KEYS_DIR, MODELS_DIR, PROJECT_ROOT
+from .pdf_report import render_passport_pdf
+from .paths import CYCLES_PATH, KEYS_DIR, MODELS_DIR, PASSPORTS_DIR, PROJECT_ROOT
 from .tiers import TIER_ORDER, questionnaire_schema
 
 logging.basicConfig(
@@ -178,6 +180,49 @@ def create_app(
         except ValueError as exc:
             raise HTTPException(status_code=400, detail=str(exc)) from exc
         return _json_safe(result)
+
+    PASSPORTS_DIR.mkdir(parents=True, exist_ok=True)
+
+    # Registered before /api/passport/{battery_id} — otherwise FastAPI would
+    # match "pdf" as a battery_id and this route would never be reached.
+    @app.post("/api/passport/pdf")
+    def passport_pdf(document: Optional[Dict] = Body(None)):
+        """Renders a signed passport document to PDF and stores it so it can
+        be fetched by a stable URL — the thing a QR code actually needs to
+        point at, since a camera scan can only trigger a GET request."""
+        if not document:
+            raise HTTPException(
+                status_code=400,
+                detail="Request body must be a passport JSON document",
+            )
+
+        passport_id = (
+            (document.get("payload") or {}).get("passport_id") or str(uuid.uuid4())
+        )
+        try:
+            pdf_bytes = render_passport_pdf(document)
+        except Exception as exc:  # noqa: BLE001 - surfaced to the caller
+            raise HTTPException(
+                status_code=400, detail=f"Could not render PDF: {exc}"
+            ) from exc
+
+        pdf_path = PASSPORTS_DIR / f"{passport_id}.pdf"
+        pdf_path.write_bytes(pdf_bytes)
+        return {"passport_id": passport_id, "pdf_url": f"/api/passport/pdf/{passport_id}"}
+
+    @app.get("/api/passport/pdf/{passport_id}")
+    def get_passport_pdf(passport_id: str):
+        pdf_path = PASSPORTS_DIR / f"{passport_id}.pdf"
+        if not pdf_path.exists():
+            raise HTTPException(
+                status_code=404,
+                detail="No PDF for this passport yet. Generate it first via POST /api/passport/pdf.",
+            )
+        return FileResponse(
+            pdf_path,
+            media_type="application/pdf",
+            filename=f"passport_{passport_id}.pdf",
+        )
 
     @app.post("/api/passport/{battery_id}")
     def passport(battery_id: str, body: Optional[Dict] = Body(None)):

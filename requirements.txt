@@ -12,6 +12,7 @@ joblib==1.5.3
 fastapi>=0.110
 uvicorn>=0.29
 cryptography>=41.0
+reportlab>=4.0
 
 # Evaluation plots
 matplotlib>=3.7
