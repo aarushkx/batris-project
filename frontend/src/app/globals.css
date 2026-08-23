@@ -1,0 +1,220 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ==========================================================================
+   Design tokens
+   --------------------------------------------------------------------------
+   Light-dominant, instrument-panel palette. Neutrals are shifted a few degrees
+   cold-green so the surfaces read as laboratory rather than office. Semantic
+   colours are deliberately desaturated: this interface reports the condition of
+   physical hardware, and a saturated red here should mean something.
+
+   `estimated` (violet) is load-bearing, not decorative. Every number this
+   platform produces from a model rather than from a measurement is marked with
+   it, which is the single distinction the whole product exists to preserve.
+   ========================================================================== */
+
+:root {
+  --radius: 0.875rem;
+
+  --paper: #ffffff;
+  --mist: #f4f5f3;
+  --line: #e4e6e2;
+  --ink: #0c1013;
+  --ink-soft: #5b6560;
+
+  --signal: #1b3fe0;
+  --estimated: #6b4be0;
+  --good: #1f8a4c;
+  --warn: #b4740e;
+  --bad: #c4321f;
+  --critical: #92140c;
+
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--paper);
+  --card-foreground: var(--ink);
+  --popover: var(--paper);
+  --popover-foreground: var(--ink);
+  --primary: var(--ink);
+  --primary-foreground: #ffffff;
+  --secondary: var(--mist);
+  --secondary-foreground: var(--ink);
+  --muted: var(--mist);
+  --muted-foreground: var(--ink-soft);
+  --accent: var(--mist);
+  --accent-foreground: var(--ink);
+  --destructive: var(--bad);
+  --border: var(--line);
+  --input: var(--line);
+  --ring: #9aa39d;
+}
+
+.dark {
+  --paper: #0b0e10;
+  --mist: #14181a;
+  --line: #232a2c;
+  --ink: #eef1ee;
+  --ink-soft: #97a09b;
+
+  --signal: #6f8cff;
+  --estimated: #a98cff;
+  --good: #46c07c;
+  --warn: #e0a53c;
+  --bad: #ef6a55;
+  --critical: #ff8a75;
+
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: #101416;
+  --card-foreground: var(--ink);
+  --popover: #101416;
+  --popover-foreground: var(--ink);
+  --primary: var(--ink);
+  --primary-foreground: #0b0e10;
+  --secondary: var(--mist);
+  --secondary-foreground: var(--ink);
+  --muted: var(--mist);
+  --muted-foreground: var(--ink-soft);
+  --accent: var(--mist);
+  --accent-foreground: var(--ink);
+  --destructive: var(--bad);
+  --border: var(--line);
+  --input: var(--line);
+  --ring: #4d5a55;
+}
+
+@theme inline {
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-jakarta), var(--font-geist), sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+
+  --color-paper: var(--paper);
+  --color-mist: var(--mist);
+  --color-line: var(--line);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-signal: var(--signal);
+  --color-estimated: var(--estimated);
+  --color-good: var(--good);
+  --color-warn: var(--warn);
+  --color-bad: var(--bad);
+  --color-critical: var(--critical);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-sm: calc(var(--radius) - 6px);
+  --radius-md: calc(var(--radius) - 3px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 6px);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/40;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "cv05" 1, "ss01" 1;
+  }
+
+  /* Display face is only ever used large, so it is tracked in tightly. */
+  .font-display {
+    font-family: var(--font-display);
+    letter-spacing: -0.035em;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--estimated) 22%, transparent);
+  }
+
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+}
+
+@layer utilities {
+  /* Small uppercase label used for every field/metric caption in the app. */
+  .eyebrow {
+    @apply text-[10.5px] font-semibold uppercase tracking-[0.14em] text-ink-soft;
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .grid-paper {
+    background-image:
+      linear-gradient(to right, color-mix(in oklab, var(--line) 70%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in oklab, var(--line) 70%, transparent) 1px, transparent 1px);
+    background-size: 44px 44px;
+  }
+
+  .mask-fade-b {
+    mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@theme inline {
+  --animate-accordion-down: accordion-down 0.22s ease-out;
+  --animate-accordion-up: accordion-up 0.22s ease-out;
+  --animate-rise: rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-draw: draw 1.4s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes accordion-down {
+  from { height: 0; }
+  to { height: var(--radix-accordion-content-height); }
+}
+@keyframes accordion-up {
+  from { height: var(--radix-accordion-content-height); }
+  to { height: 0; }
+}
+@keyframes rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes draw {
+  from { stroke-dashoffset: var(--dash, 1200); }
+  to { stroke-dashoffset: 0; }
+}
