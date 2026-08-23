@@ -86,8 +86,15 @@ export function SiteHeader() {
         </button>
       </div>
 
-      {open ? (
-        <div className="border-t border-line bg-paper px-5 pb-5 md:hidden">
+      <div
+        className={cn(
+          "grid overflow-hidden border-line bg-paper transition-[grid-template-rows,opacity,border-color] duration-300 ease-out md:hidden",
+          open
+            ? "grid-rows-[1fr] border-t opacity-100"
+            : "grid-rows-[0fr] border-t-0 opacity-0",
+        )}
+      >
+        <div className="min-h-0 px-5 pb-5">
           <nav className="grid gap-0.5 py-2">
             {NAV_LINKS.map((link) => (
               <Link
@@ -108,7 +115,7 @@ export function SiteHeader() {
             </Button>
           </div>
         </div>
-      ) : null}
+      </div>
     </header>
   );
 }
