@@ -416,7 +416,7 @@ export const TEAM_NAME = "SIH-DEMO-TEAM";
 // Product identity
 // ---------------------------------------------------------------------------
 
-export const APP_NAME = "BATRIS";
+export const APP_NAME = "BATRIS.";
 export const APP_FULL_NAME = "Battery Traceability & Reliability Intelligence System";
 export const APP_TAGLINE =
   "SOH estimation · degradation analysis · safety · verifiable reuse passport";
@@ -753,22 +753,65 @@ export const ACCURACY_ROWS = [
 export const ACCURACY_NOTE =
   "Mean absolute error in SOH percentage points, measured by leave-one-battery-out cross-validation on four NASA cells. Each tier has its own separately trained and separately validated model, so a missing input never becomes a silent null in a model that never saw one.";
 
-export const LIMITS = [
+// export const LIMITS = [
+//   {
+//     title: "Four cells is a small training set",
+//     body: "Every accuracy figure on this page comes from four 18650 LCO cells. It is enough to validate the method honestly; it is not enough to claim a production-grade model.",
+//   },
+//   {
+//     title: "Other chemistries are extrapolation",
+//     body: "Submit an LFP or NMC pack and the estimate is flagged as out-of-distribution and its interval widened. That widening factor is engineering judgement, not a measured quantity.",
+//   },
+//   {
+//     title: "Tier 4 is where it breaks",
+//     body: "With only the charge phase split, R² falls to 0.13 and the worst cell misses by 13 SOH points. The platform still answers, marks it indicative-only, and refuses to issue a reuse grade.",
+//   },
+//   {
+//     title: "An estimate is not a certificate",
+//     body: "Nothing here replaces accredited testing before a warranted resale. The point is to decide which packs are worth testing at all.",
+//   },
+// ] as const;
+
+// export const PASSPORT_FLOW = [
+//   {
+//     title: "One record, all the important signals",
+//     body: "Health, safety, anomaly findings, degradation factors and second-life recommendations are brought together in one structured battery record.",
+//   },
+
+//   {
+//     title: "Designed to move with the battery",
+//     body: "The passport can be shared digitally, downloaded as a PDF and accessed through a QR code attached to the physical battery.",
+//   },
+
+//   {
+//     title: "Easy to verify",
+//     body: "The passport is digitally signed so a buyer, operator or downstream user can check whether the record has been altered.",
+//   },
+
+//   {
+//     title: "Ready for the next stage",
+//     body: "The same record can support decisions across resale, second-life deployment and future battery lifecycle tracking.",
+//   },
+// ] as const;
+export const PASSPORT_FLOW = [
   {
-    title: "Four cells is a small training set",
-    body: "Every accuracy figure on this page comes from four 18650 LCO cells. It is enough to validate the method honestly; it is not enough to claim a production-grade model.",
+    title: "One record, not a collection of reports",
+    body: "The passport brings the battery’s health estimate, confidence interval, safety findings, degradation signals and second-life assessment into a single machine-readable record.",
   },
+
   {
-    title: "Other chemistries are extrapolation",
-    body: "Submit an LFP or NMC pack and the estimate is flagged as out-of-distribution and its interval widened. That widening factor is engineering judgement, not a measured quantity.",
+    title: "A passport that stays with the battery",
+    body: "The record can be issued as JSON or PDF and linked to the physical battery through a QR code, so the same assessment can be retrieved as the battery moves between owners, operators and its next use.",
   },
+
   {
-    title: "Tier 4 is where it breaks",
-    body: "With only the charge phase split, R² falls to 0.13 and the worst cell misses by 13 SOH points. The platform still answers, marks it indicative-only, and refuses to issue a reuse grade.",
+    title: "A record a buyer can verify",
+    body: "The passport is signed with Ed25519 over a canonical representation of the payload. Change a health value, model reference or other signed field and verification fails.",
   },
+
   {
-    title: "An estimate is not a certificate",
-    body: "Nothing here replaces accredited testing before a warranted resale. The point is to decide which packs are worth testing at all.",
+    title: "Evidence for the next decision",
+    body: "The passport preserves the inputs, model provenance and assessment results behind the decision, giving the next owner more than a single health number to work with.",
   },
 ] as const;
 

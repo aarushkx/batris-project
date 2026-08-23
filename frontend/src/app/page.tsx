@@ -4,7 +4,7 @@ import {
   CallToAction,
   Capabilities,
   HowItWorks,
-  Limits,
+  PassportTrust,
   PassportSection,
 } from "@/components/landing/sections";
 
@@ -16,7 +16,8 @@ export default function LandingPage() {
       <HowItWorks />
       <Accuracy />
       <PassportSection />
-      <Limits />
+      {/* <Limits /> */}
+      <PassportTrust />
       <CallToAction />
     </>
   );

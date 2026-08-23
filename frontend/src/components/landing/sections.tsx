@@ -30,7 +30,7 @@ import {
   CAPABILITIES,
   CTA,
   HOW_IT_WORKS,
-  LIMITS,
+  PASSPORT_FLOW,
   PASSPORT_SECTION,
 } from "@/lib/constants";
 import { cn } from "@/lib/utils";
@@ -274,28 +274,68 @@ export function PassportSection() {
 
 /* ================================================================== limits */
 
-export function Limits() {
+// export function Limits() {
+//   return (
+//     <Shell id="limits" className="bg-mist/50">
+//       <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
+//         <div>
+//           <Eyebrow>Where it stops working</Eyebrow>
+//           <h2 className="font-display mt-5 text-[clamp(2rem,4.2vw,3.25rem)] leading-[1.02] font-bold text-balance">
+//             The limits, stated up front
+//           </h2>
+//           <p className="mt-5 text-[14.5px] leading-relaxed text-ink-soft">
+//             Knowing where a method stops working is part of reporting it honestly. None of
+//             this is buried in a footnote inside the product either — the same warnings
+//             appear next to the numbers they apply to.
+//           </p>
+//         </div>
+
+//         <div className="rounded-2xl border border-line bg-paper px-6 sm:px-8">
+//           <Accordion type="single" collapsible defaultValue="item-0">
+//             {LIMITS.map((limit, i) => (
+//               <AccordionItem key={limit.title} value={`item-${i}`}>
+//                 <AccordionTrigger>{limit.title}</AccordionTrigger>
+//                 <AccordionContent>{limit.body}</AccordionContent>
+//               </AccordionItem>
+//             ))}
+//           </Accordion>
+//         </div>
+//       </div>
+//     </Shell>
+//   );
+// }
+export function PassportTrust() {
   return (
-    <Shell id="limits" className="bg-mist/50">
+    <Shell id="passport-trust" className="bg-mist/50">
       <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
         <div>
-          <Eyebrow>Where it stops working</Eyebrow>
+          {/* <Eyebrow>Built for the battery lifecycle</Eyebrow>
           <h2 className="font-display mt-5 text-[clamp(2rem,4.2vw,3.25rem)] leading-[1.02] font-bold text-balance">
-            The limits, stated up front
+            From assessment to a passport you can carry forward
           </h2>
           <p className="mt-5 text-[14.5px] leading-relaxed text-ink-soft">
-            Knowing where a method stops working is part of reporting it honestly. None of
-            this is buried in a footnote inside the product either — the same warnings
-            appear next to the numbers they apply to.
-          </p>
+            BATRIS turns battery assessment into a portable record that can follow the
+            battery through resale, reuse and its next stage of life.
+          </p> */}
+          <Eyebrow>From assessment to record</Eyebrow>
+
+<h2 className="font-display mt-5 text-[clamp(2rem,4.2vw,3.25rem)] leading-[1.02] font-bold text-balance">
+  The assessment doesn't end with a number
+</h2>
+
+<p className="mt-5 text-[14.5px] leading-relaxed text-ink-soft">
+  BATRIS turns the result of a battery assessment into a portable,
+  verifiable record — one that can be shared, checked and carried
+  forward with the battery.
+</p>
         </div>
 
         <div className="rounded-2xl border border-line bg-paper px-6 sm:px-8">
           <Accordion type="single" collapsible defaultValue="item-0">
-            {LIMITS.map((limit, i) => (
-              <AccordionItem key={limit.title} value={`item-${i}`}>
-                <AccordionTrigger>{limit.title}</AccordionTrigger>
-                <AccordionContent>{limit.body}</AccordionContent>
+            {PASSPORT_FLOW.map((item, i) => (
+              <AccordionItem key={item.title} value={`item-${i}`}>
+                <AccordionTrigger>{item.title}</AccordionTrigger>
+                <AccordionContent>{item.body}</AccordionContent>
               </AccordionItem>
             ))}
           </Accordion>
