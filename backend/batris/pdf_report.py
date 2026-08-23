@@ -164,6 +164,7 @@ def render_passport_pdf(document: Dict) -> bytes:
                     "public_key_fingerprint", "\u2014")),
             ]
         ),
+        Spacer(1, 8),
         Paragraph(
             "Signature value (hex) &mdash; verify this document against the "
             "issuer's published public key rather than trusting this PDF alone:",
