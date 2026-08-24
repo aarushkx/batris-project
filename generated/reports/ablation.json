@@ -1,0 +1,56 @@
+{
+  "all_features": {
+    "n_features": 25,
+    "mae": 0.020348560764808996,
+    "mae_soh_points": 2.035,
+    "delta_vs_baseline": 0.0
+  },
+  "without_charge_acceptance": {
+    "n_features": 16,
+    "mae": 0.032228362548317596,
+    "mae_soh_points": 3.223,
+    "delta_vs_baseline": 1.188
+  },
+  "without_internal_resistance": {
+    "n_features": 20,
+    "mae": 0.02203560277661391,
+    "mae_soh_points": 2.204,
+    "delta_vs_baseline": 0.169
+  },
+  "without_thermal_stress": {
+    "n_features": 19,
+    "mae": 0.020433266466661906,
+    "mae_soh_points": 2.043,
+    "delta_vs_baseline": 0.008
+  },
+  "without_usage_history": {
+    "n_features": 20,
+    "mae": 0.0351384306982699,
+    "mae_soh_points": 3.514,
+    "delta_vs_baseline": 1.479
+  },
+  "only_charge_acceptance": {
+    "n_features": 9,
+    "mae": 0.025473191940727617,
+    "mae_soh_points": 2.547,
+    "delta_vs_baseline": 0.512
+  },
+  "only_internal_resistance": {
+    "n_features": 5,
+    "mae": 0.07807019197859318,
+    "mae_soh_points": 7.807,
+    "delta_vs_baseline": 5.772
+  },
+  "only_thermal_stress": {
+    "n_features": 6,
+    "mae": 0.08103391606107767,
+    "mae_soh_points": 8.103,
+    "delta_vs_baseline": 6.069
+  },
+  "only_usage_history": {
+    "n_features": 5,
+    "mae": 0.02878819582156242,
+    "mae_soh_points": 2.879,
+    "delta_vs_baseline": 0.844
+  }
+}
