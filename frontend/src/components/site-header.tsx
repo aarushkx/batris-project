@@ -67,11 +67,11 @@ export function SiteHeader() {
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
-          {!onDashboard && (
+          {/* {!onDashboard && (
             <Button variant="ghost" size="sm" asChild>
               <Link href="/dashboard?view=own">Assess my battery</Link>
             </Button>
-          )}
+          )} */}
           <Button size="sm" asChild>
             <Link href="/dashboard">{onDashboard ? "Fleet dashboard" : "Open dashboard"}</Link>
           </Button>
@@ -136,9 +136,9 @@ export function SiteHeader() {
               <Button asChild>
                 <Link href="/dashboard">Open dashboard</Link>
               </Button>
-              <Button variant="outline" asChild>
+              {/* <Button variant="outline" asChild>
                 <Link href="/dashboard?view=own">Assess my battery</Link>
-              </Button>
+              </Button> */}
               {!loading && user ? (
                 <>
                   <Button variant="outline" asChild><Link href="/account"><UserRound /> My account</Link></Button>
