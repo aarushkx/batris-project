@@ -12,7 +12,7 @@
 // // ---------------------------------------------------------------------------
 
 // /** Team identifier carried on issued passports. */
-// export const TEAM_NAME = "SIH-DEMO-TEAM";
+// export const TEAM_NAME = "Team Ascend";
 
 // // ---------------------------------------------------------------------------
 // // Product identity
@@ -410,7 +410,7 @@
 // ---------------------------------------------------------------------------
 
 /** Team identifier carried on issued passports. */
-export const TEAM_NAME = "SIH-DEMO-TEAM";
+export const TEAM_NAME = "Team Ascend";
 
 // ---------------------------------------------------------------------------
 // Product identity
