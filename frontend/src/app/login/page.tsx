@@ -90,7 +90,7 @@ import { Label } from "@/components/ui/label";
 import { AuthShell } from "@/components/auth/auth-shell";
 import { useAuth } from "@/lib/auth";
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
   const params = useSearchParams();
 
@@ -216,5 +216,13 @@ export default function LoginPage() {
         </div>
       </form>
     </AuthShell>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <React.Suspense fallback={null}>
+      <LoginContent />
+    </React.Suspense>
   );
 }
