@@ -24,6 +24,8 @@ from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 
 from io import BytesIO
 
+from datetime import datetime
+
 _STYLES = getSampleStyleSheet()
 
 _TITLE = ParagraphStyle(
@@ -84,6 +86,17 @@ def _fmt_ci(interval) -> str:
     except (TypeError, ValueError):
         return "\u2014"
 
+def _fmt_issued_at(value) -> str:
+    """Format an ISO UTC timestamp for human-readable PDF output."""
+    if not value:
+        return "\u2014"
+
+    try:
+        dt = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+        return dt.strftime("%d %b %Y, %I:%M %p UTC")
+    except (TypeError, ValueError):
+        return str(value)
+
 
 def render_passport_pdf(document: Dict) -> bytes:
     """Renders a signed passport document to PDF bytes."""
@@ -109,9 +122,15 @@ def render_passport_pdf(document: Dict) -> bytes:
 
     story = [
         Paragraph("Second-life battery passport", _TITLE),
+        # Paragraph(
+        #     f"Passport ID {payload.get('passport_id', '\u2014')} &middot; "
+        #     f"issued {payload.get('issued_at_utc', '\u2014')} by "
+        #     f"{payload.get('issuer', '\u2014')}",
+        #     _SUB,
+        # ),
         Paragraph(
             f"Passport ID {payload.get('passport_id', '\u2014')} &middot; "
-            f"issued {payload.get('issued_at_utc', '\u2014')} by "
+            f"issued {_fmt_issued_at(payload.get('issued_at_utc'))} by "
             f"{payload.get('issuer', '\u2014')}",
             _SUB,
         ),
@@ -125,7 +144,7 @@ def render_passport_pdf(document: Dict) -> bytes:
                     "display_name", "\u2014")),
             ]
         ),
-        Paragraph("Health estimate (ESTIMATED, not a certified measurement)", _H2),
+        Paragraph("Health estimate", _H2),
         _kv_table(
             [
                 ("State of health", _fmt(health.get("soh_percent"), " %")),
