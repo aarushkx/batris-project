@@ -86,7 +86,7 @@ def _fmt_ci(interval) -> str:
     except (TypeError, ValueError):
         return "\u2014"
 
-def _fmt_issued_at(value) -> str:
+def _fmt_timestamp(value) -> str:
     """Format an ISO UTC timestamp for human-readable PDF output."""
     if not value:
         return "\u2014"
@@ -130,7 +130,7 @@ def render_passport_pdf(document: Dict) -> bytes:
         # ),
         Paragraph(
             f"Passport ID {payload.get('passport_id', '\u2014')} &middot; "
-            f"issued {_fmt_issued_at(payload.get('issued_at_utc'))} by "
+            f"issued {_fmt_timestamp(payload.get('issued_at_utc'))} by "
             f"{payload.get('issuer', '\u2014')}",
             _SUB,
         ),
@@ -178,7 +178,7 @@ def render_passport_pdf(document: Dict) -> bytes:
         _kv_table(
             [
                 ("Algorithm", signature.get("algorithm", "\u2014")),
-                ("Signed at", signature.get("signed_at_utc", "\u2014")),
+                ("Signed at", _fmt_timestamp(signature.get("signed_at_utc"))),
                 ("Key fingerprint", signature.get(
                     "public_key_fingerprint", "\u2014")),
             ]
