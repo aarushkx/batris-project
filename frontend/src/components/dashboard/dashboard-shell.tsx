@@ -36,12 +36,19 @@ export function DashboardShell() {
       </div>
 
       <Tabs value={view} onValueChange={setView} className="mt-6 gap-4">
-        <TabsList className="w-full sm:w-auto">
-          <TabsTrigger value="fleet">
+        <TabsList className="grid w-full grid-cols-2 sm:inline-flex sm:w-auto">
+          <TabsTrigger
+            value="fleet"
+            className="min-w-0 whitespace-normal px-2 text-center leading-tight sm:px-4"
+          >
             <Database />
             Batteries in the dataset
           </TabsTrigger>
-          <TabsTrigger value="own">
+
+          <TabsTrigger
+            value="own"
+            className="min-w-0 whitespace-normal px-2 text-center leading-tight sm:px-4"
+          >
             <Beaker />
             Assess my own battery
           </TabsTrigger>
