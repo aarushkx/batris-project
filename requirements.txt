@@ -13,6 +13,8 @@ fastapi>=0.110
 uvicorn>=0.29
 cryptography>=41.0
 reportlab>=4.0
+pymongo>=4.10
+python-dotenv>=1.0
 
 # Evaluation plots
 matplotlib>=3.7
