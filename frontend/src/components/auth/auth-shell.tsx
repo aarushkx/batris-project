@@ -57,7 +57,7 @@ export function AuthShell({
 
           <div className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center">
             <Link href="/" className="mb-8 inline-flex items-center gap-1.5 text-[12px] font-medium text-ink-soft hover:text-ink">
-              <ArrowLeft className="size-3.5" /> Back to {APP_FULL_NAME}
+              <ArrowLeft className="size-3.5" /> Back to {APP_NAME}
             </Link>
             <p className="eyebrow">{eyebrow}</p>
             <h2 className="mt-2 font-display text-3xl font-bold tracking-[-0.04em]">{title}</h2>

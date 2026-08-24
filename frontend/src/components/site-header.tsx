@@ -91,43 +91,66 @@ export function SiteHeader() {
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
-          className="inline-flex size-9 cursor-pointer items-center justify-center rounded-full border border-line md:hidden"
+          className="relative inline-flex size-9 cursor-pointer items-center justify-center rounded-full border border-line transition-colors md:hidden"
         >
-          {open ? <X className="size-4" /> : <Menu className="size-4" />}
+          <X
+            className={cn(
+              "size-4 absolute transition-all duration-200 ease-in-out",
+              open ? "rotate-0 scale-100 opacity-100" : "-rotate-45 scale-75 opacity-0",
+            )}
+          />
+          <Menu
+            className={cn(
+              "size-4 transition-all duration-200 ease-in-out",
+              open ? "rotate-45 scale-75 opacity-0" : "rotate-0 scale-100 opacity-100",
+            )}
+          />
         </button>
       </div>
 
-      {open ? (
-        <div className="border-t border-line bg-paper px-5 pb-5 md:hidden">
-          <nav className="grid gap-0.5 py-2">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="rounded-lg px-3 py-2.5 text-[14px] font-medium text-ink-soft hover:bg-mist hover:text-ink"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-          <div className="grid gap-2">
-            <Button asChild>
-              <Link href="/dashboard">Open dashboard</Link>
-            </Button>
-            <Button variant="outline" asChild>
-              <Link href="/dashboard?view=own">Assess my battery</Link>
-            </Button>
-            {!loading && user ? (
-              <>
-                <Button variant="outline" asChild><Link href="/account"><UserRound /> My account</Link></Button>
-                <Button variant="ghost" onClick={() => void logout()}><LogIn /> Sign out</Button>
-              </>
-            ) : (
-              <Button variant="outline" asChild><Link href="/login"><LogIn /> Sign in</Link></Button>
+      <div
+        className={cn(
+          "grid transition-[grid-template-rows] duration-300 ease-in-out md:hidden",
+          open ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
+        )}
+      >
+        <div className="overflow-hidden">
+          <div
+            className={cn(
+              "border-t border-line bg-paper px-5 pb-5 transition-opacity duration-200 ease-in-out",
+              open ? "opacity-100 delay-100" : "opacity-0",
             )}
+          >
+            <nav className="grid gap-0.5 py-2">
+              {NAV_LINKS.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="rounded-lg px-3 py-2.5 text-[14px] font-medium text-ink-soft hover:bg-mist hover:text-ink"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+            <div className="grid gap-2">
+              <Button asChild>
+                <Link href="/dashboard">Open dashboard</Link>
+              </Button>
+              <Button variant="outline" asChild>
+                <Link href="/dashboard?view=own">Assess my battery</Link>
+              </Button>
+              {!loading && user ? (
+                <>
+                  <Button variant="outline" asChild><Link href="/account"><UserRound /> My account</Link></Button>
+                  <Button variant="ghost" onClick={() => void logout()}><LogIn /> Sign out</Button>
+                </>
+              ) : (
+                <Button variant="outline" asChild><Link href="/login"><LogIn /> Sign in</Link></Button>
+              )}
+            </div>
           </div>
         </div>
-      ) : null}
+      </div>
     </header>
   );
 }
