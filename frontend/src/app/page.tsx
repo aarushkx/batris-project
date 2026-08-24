@@ -16,7 +16,6 @@ export default function LandingPage() {
       <HowItWorks />
       <Accuracy />
       <PassportSection />
-      {/* <Limits /> */}
       <PassportTrust />
       <CallToAction />
     </>

@@ -5,6 +5,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Toaster } from "@/components/ui/sonner";
 import { APP_DESCRIPTION, APP_FULL_NAME, APP_NAME } from "@/lib/constants";
+import { AuthProvider } from "@/lib/auth";
 
 /* Display face is used large and tracked in tight; body is a neutral grotesque
    so the two never compete. Mono carries every measured figure and hash. */
@@ -49,10 +50,12 @@ export default function RootLayout({
         >
           Skip to content
         </a>
-        <SiteHeader />
-        <main id="main">{children}</main>
+        <AuthProvider>
+          <SiteHeader />
+          <main id="main">{children}</main>
         <SiteFooter />
-        <Toaster />
+          <Toaster />
+        </AuthProvider>
       </body>
     </html>
   );

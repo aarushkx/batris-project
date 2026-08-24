@@ -6,3 +6,4 @@ generated/keys/
 generated/passports/
 data/raw/generic_csv/
 .DS_Store
+.env

@@ -148,7 +148,7 @@ export function HowItWorks() {
 export function Accuracy() {
   return (
     <Shell id="accuracy">
-      <div className="grid grid-cols-1 gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
+      <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
         <div>
           <Eyebrow>Measured accuracy</Eyebrow>
           <h2 className="font-display mt-5 text-[clamp(2rem,4.2vw,3.25rem)] leading-[1.02] font-bold text-balance">
@@ -167,7 +167,7 @@ export function Accuracy() {
           </div>
         </div>
 
-        <div className="min-w-0 rounded-2xl border border-line bg-paper p-2 sm:p-4">
+        <div className="rounded-2xl border border-line bg-paper p-2 sm:p-4">
           <Table>
             <TableHeader>
               <TableRow>
@@ -318,16 +318,15 @@ export function PassportTrust() {
             battery through resale, reuse and its next stage of life.
           </p> */}
           <Eyebrow>From assessment to record</Eyebrow>
+          <h2 className="font-display mt-5 text-[clamp(2rem,4.2vw,3.25rem)] leading-[1.02] font-bold text-balance">
+            The assessment doesn't end with a number
+          </h2>
 
-<h2 className="font-display mt-5 text-[clamp(2rem,4.2vw,3.25rem)] leading-[1.02] font-bold text-balance">
-  The assessment doesn't end with a number
-</h2>
-
-<p className="mt-5 text-[14.5px] leading-relaxed text-ink-soft">
-  BATRIS turns the result of a battery assessment into a portable,
-  verifiable record — one that can be shared, checked and carried
-  forward with the battery.
-</p>
+          <p className="mt-5 text-[14.5px] leading-relaxed text-ink-soft">
+            BATRIS turns the result of a battery assessment into a portable,
+            verifiable record — one that can be shared, checked and carried
+            forward with the battery.
+          </p>
         </div>
 
         <div className="rounded-2xl border border-line bg-paper px-6 sm:px-8">

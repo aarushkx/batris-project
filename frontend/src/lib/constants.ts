@@ -416,7 +416,7 @@ export const TEAM_NAME = "SIH-DEMO-TEAM";
 // Product identity
 // ---------------------------------------------------------------------------
 
-export const APP_NAME = "BATRIS.";
+export const APP_NAME = "BATRIS";
 export const APP_FULL_NAME = "Battery Traceability & Reliability Intelligence System";
 export const APP_TAGLINE =
   "SOH estimation · degradation analysis · safety · verifiable reuse passport";
@@ -452,6 +452,12 @@ export const API_ROUTES = {
   onboardingAssess: `${API_BASE}/onboarding/assess`,
   onboardingPassport: `${API_BASE}/onboarding/passport`,
   onboardingFormat: `${API_BASE}/onboarding/format`,
+  authRegister: `${API_BASE}/auth/register`,
+  authLogin: `${API_BASE}/auth/login`,
+  authLogout: `${API_BASE}/auth/logout`,
+  authMe: `${API_BASE}/auth/me`,
+  accountAssessments: `${API_BASE}/account/assessments`,
+  accountPassports: `${API_BASE}/account/passports`,
 } as const;
 
 // ---------------------------------------------------------------------------
@@ -772,27 +778,6 @@ export const ACCURACY_NOTE =
 //   },
 // ] as const;
 
-// export const PASSPORT_FLOW = [
-//   {
-//     title: "One record, all the important signals",
-//     body: "Health, safety, anomaly findings, degradation factors and second-life recommendations are brought together in one structured battery record.",
-//   },
-
-//   {
-//     title: "Designed to move with the battery",
-//     body: "The passport can be shared digitally, downloaded as a PDF and accessed through a QR code attached to the physical battery.",
-//   },
-
-//   {
-//     title: "Easy to verify",
-//     body: "The passport is digitally signed so a buyer, operator or downstream user can check whether the record has been altered.",
-//   },
-
-//   {
-//     title: "Ready for the next stage",
-//     body: "The same record can support decisions across resale, second-life deployment and future battery lifecycle tracking.",
-//   },
-// ] as const;
 export const PASSPORT_FLOW = [
   {
     title: "One record, not a collection of reports",

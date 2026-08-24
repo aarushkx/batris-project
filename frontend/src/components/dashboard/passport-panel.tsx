@@ -9,6 +9,8 @@ import { JsonBlock, VerifyBox } from "@/components/shared/analysis";
 import { Note, SectionCard } from "@/components/shared/primitives";
 import { issuePassportPdf, verifyPassport } from "@/lib/api";
 import { downloadJSON } from "@/lib/format";
+import { savePassportHistory, useAuth } from "@/lib/auth";
+import { useRouter } from "next/navigation";
 import type { Passport, PassportPdf, VerifyResult } from "@/lib/types";
 
 export function PassportPanel({
@@ -29,12 +31,16 @@ export function PassportPanel({
   } | null>(null);
   const [busy, setBusy] = React.useState<string | null>(null);
   const [pdf, setPdf] = React.useState<PassportPdf | null>(null);
+  const [saved, setSaved] = React.useState(false);
+  const { user } = useAuth();
+  const router = useRouter();
 
   // A new assessment invalidates whatever was issued for the previous one.
   const reset = React.useCallback(() => {
     setPassport(null);
     setVerification(null);
     setPdf(null);
+    setSaved(false);
   }, []);
 
   React.useEffect(() => {
@@ -95,6 +101,25 @@ export function PassportPanel({
     setBusy(null);
   }
 
+
+  async function handleSave() {
+    if (!passport) return;
+    if (!user) {
+      router.push("/login?next=%2Fdashboard");
+      return;
+    }
+    setBusy("save");
+    try {
+      await savePassportHistory(passport);
+      setSaved(true);
+      toast.success("Passport saved", { description: "It is now in My BATRIS." });
+    } catch (error) {
+      toast.error("Could not save passport", { description: error instanceof Error ? error.message : String(error) });
+    } finally {
+      setBusy(null);
+    }
+  }
+
   function handleDownload() {
     if (!passport) return;
     const batteryId = passport.payload.battery.battery_id ?? "battery";
@@ -149,6 +174,10 @@ export function PassportPanel({
         <Button variant="outline" onClick={handleDownload} disabled={!passport}>
           <Download />
           Download JSON
+        </Button>
+        <Button variant="outline" onClick={handleSave} disabled={!passport || busy === "save" || saved}>
+          <FileSignature />
+          {saved ? "Saved to account" : user ? "Save to account" : "Sign in to save"}
         </Button>
         <Button variant="outline" onClick={handleGetPdf} disabled={!passport || busy === "pdf"}>
           <QrCode />

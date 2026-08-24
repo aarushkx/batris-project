@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { toast } from "sonner";
 import {
   AlertTriangle,
   Check,
@@ -81,6 +82,8 @@ import type {
   UnseenAssessment,
 } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { saveAssessmentHistory, useAuth } from "@/lib/auth";
+import { useRouter } from "next/navigation";
 
 /* ------------------------------------------------------------------ field --- */
 
@@ -169,6 +172,8 @@ export function OwnView() {
   const [assessing, setAssessing] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const resultsRef = React.useRef<HTMLDivElement | null>(null);
+  const { user } = useAuth();
+  const router = useRouter();
 
   // ------------------------------------------------------------ bootstrap
   const loadSchema = React.useCallback(async (selectKey?: string) => {
@@ -676,7 +681,22 @@ export function OwnView() {
 
       {/* ------------------------------------------------------- results */}
       <div ref={resultsRef} className="scroll-mt-24">
-        {assessment ? <OwnResults assessment={assessment} issue={issue} /> : null}
+        {assessment ? (
+          <OwnResults
+            assessment={assessment}
+            issue={issue}
+            saveSnapshot={() => {
+              const payload = buildPayload();
+              delete payload.csv;
+              if (mode === "telemetry" && csvInfo) {
+                payload.telemetry_file = { name: csvInfo.name, rows: csvInfo.rows };
+              }
+              return payload;
+            }}
+            user={user}
+            onSignIn={() => router.push("/login?next=%2Fdashboard%3Fview%3Down")}
+          />
+        ) : null}
       </div>
     </div>
   );
@@ -763,10 +783,40 @@ function TierTable({
 function OwnResults({
   assessment: a,
   issue,
+  saveSnapshot,
+  user,
+  onSignIn,
 }: {
   assessment: UnseenAssessment;
   issue: () => Promise<import("@/lib/types").Passport>;
+  saveSnapshot: () => Record<string, unknown>;
+  user: import("@/lib/auth").AuthUser | null;
+  onSignIn: () => void;
 }) {
+  const [saving, setSaving] = React.useState(false);
+  const [saved, setSaved] = React.useState(false);
+
+  async function handleSave() {
+    if (!user) {
+      onSignIn();
+      return;
+    }
+    setSaving(true);
+    try {
+      await saveAssessmentHistory({
+        battery_id: (saveSnapshot().battery_id as string | null | undefined) ?? a.battery_id ?? null,
+        input_mode: String(saveSnapshot().mode ?? "questionnaire"),
+        format_key: (saveSnapshot().format_key as string | null | undefined) ?? null,
+        input_snapshot: saveSnapshot(),
+        assessment: a,
+      });
+      setSaved(true);
+    } catch (error) {
+      toast.error("Could not save assessment", { description: error instanceof Error ? error.message : String(error) });
+    } finally {
+      setSaving(false);
+    }
+  }
   const acc = a.input_tier.measured_accuracy ?? {};
   const detectorsRun = Object.values(a.anomaly.detectors_run ?? {}).filter(Boolean).length;
 
@@ -833,6 +883,21 @@ function OwnResults({
               <AlertDescription>{a.chemistry_transfer.note}</AlertDescription>
             </Alert>
           ) : null}
+        </div>
+      </SectionCard>
+
+      <SectionCard title="Keep this assessment">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className="text-[13px] font-medium">{saved ? "Saved to your BATRIS account" : "Save this result for later"}</p>
+            <p className="mt-1 text-[11.5px] leading-relaxed text-ink-soft">
+              {saved ? "The assessment snapshot and the non-file inputs are now in My BATRIS." : "We do not store the raw telemetry CSV here; the saved record keeps the useful inputs and the resulting assessment."}
+            </p>
+          </div>
+          <Button variant={saved ? "outline" : "default"} onClick={handleSave} disabled={saving || saved}>
+            {saving ? <RefreshCw className="animate-spin" /> : <FileUp />}
+            {saved ? "Saved" : user ? "Save to my account" : "Sign in to save"}
+          </Button>
         </div>
       </SectionCard>
 

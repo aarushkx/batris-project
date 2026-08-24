@@ -4,10 +4,11 @@ import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
+import { Menu, X, LogIn, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { APP_NAME, NAV_LINKS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/lib/auth";
 
 export function Logomark({ className }: { className?: string }) {
   return (
@@ -25,6 +26,7 @@ export function SiteHeader() {
   const [open, setOpen] = React.useState(false);
   const [scrolled, setScrolled] = React.useState(false);
   const pathname = usePathname();
+  const { user, loading, logout } = useAuth();
 
   React.useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -73,6 +75,15 @@ export function SiteHeader() {
           <Button size="sm" asChild>
             <Link href="/dashboard">{onDashboard ? "Fleet dashboard" : "Open dashboard"}</Link>
           </Button>
+          {!loading && user ? (
+            <Button variant="outline" size="sm" asChild>
+              <Link href="/account"><UserRound /> My account</Link>
+            </Button>
+          ) : (
+            <Button variant="outline" size="sm" asChild>
+              <Link href="/login"><LogIn /> Sign in</Link>
+            </Button>
+          )}
         </div>
 
         <button
@@ -86,15 +97,8 @@ export function SiteHeader() {
         </button>
       </div>
 
-      <div
-        className={cn(
-          "grid overflow-hidden border-line bg-paper transition-[grid-template-rows,opacity,border-color] duration-300 ease-out md:hidden",
-          open
-            ? "grid-rows-[1fr] border-t opacity-100"
-            : "grid-rows-[0fr] border-t-0 opacity-0",
-        )}
-      >
-        <div className="min-h-0 px-5 pb-5">
+      {open ? (
+        <div className="border-t border-line bg-paper px-5 pb-5 md:hidden">
           <nav className="grid gap-0.5 py-2">
             {NAV_LINKS.map((link) => (
               <Link
@@ -113,9 +117,17 @@ export function SiteHeader() {
             <Button variant="outline" asChild>
               <Link href="/dashboard?view=own">Assess my battery</Link>
             </Button>
+            {!loading && user ? (
+              <>
+                <Button variant="outline" asChild><Link href="/account"><UserRound /> My account</Link></Button>
+                <Button variant="ghost" onClick={() => void logout()}><LogIn /> Sign out</Button>
+              </>
+            ) : (
+              <Button variant="outline" asChild><Link href="/login"><LogIn /> Sign in</Link></Button>
+            )}
           </div>
         </div>
-      </div>
+      ) : null}
     </header>
   );
 }

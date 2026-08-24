@@ -16,6 +16,8 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
+from .auth import clear_session, current_user, get_auth_store, require_user, set_session
+
 from .assess import BatteryAssessor
 from .assess_unseen import TRAINED_CHEMISTRIES, UnseenBatteryAssessor
 from .formats import list_formats, register_custom_format
@@ -99,6 +101,86 @@ def create_app(
 
     keys = generate_keypair(keys_dir)
     private_key = load_private_key(keys["private"])
+
+    # ------------------------------------------------------------------ auth
+    # Accounts are intentionally optional for the public demo. Signing in
+    # unlocks durable user-owned history without hiding the core product.
+
+    @app.post("/api/auth/register")
+    def auth_register(body: Optional[Dict] = Body(None)):
+        body = body or {}
+        name = str(body.get("name", "")).strip()
+        email = str(body.get("email", "")).strip().lower()
+        password = str(body.get("password", ""))
+        if len(name) < 2:
+            raise HTTPException(status_code=400, detail="Enter your name.")
+        if "@" not in email or len(email) < 5:
+            raise HTTPException(status_code=400, detail="Enter a valid email address.")
+        if len(password) < 8:
+            raise HTTPException(status_code=400, detail="Password must be at least 8 characters.")
+        user = get_auth_store().create_user(name, email, password)
+        response = JSONResponse({"user": user})
+        set_session(response, user["id"])
+        return response
+
+    @app.post("/api/auth/login")
+    def auth_login(body: Optional[Dict] = Body(None)):
+        body = body or {}
+        email = str(body.get("email", "")).strip().lower()
+        password = str(body.get("password", ""))
+        if not email or not password:
+            raise HTTPException(status_code=400, detail="Email and password are required.")
+        user = get_auth_store().authenticate(email, password)
+        response = JSONResponse({"user": user})
+        set_session(response, user["id"])
+        return response
+
+    @app.post("/api/auth/logout")
+    def auth_logout():
+        response = JSONResponse({"ok": True})
+        clear_session(response)
+        return response
+
+    @app.get("/api/auth/me")
+    def auth_me(request: Request):
+        return {"user": current_user(request)}
+
+    @app.get("/api/account/assessments")
+    def account_assessments(request: Request):
+        user = require_user(request)
+        return {"items": _json_safe(get_auth_store().list_assessments(user["id"]))}
+
+    @app.post("/api/account/assessments")
+    def account_save_assessment(request: Request, body: Optional[Dict] = Body(None)):
+        user = require_user(request)
+        body = body or {}
+        assessment = body.get("assessment")
+        if not isinstance(assessment, dict):
+            raise HTTPException(status_code=400, detail="Assessment data is required.")
+        get_auth_store().save_assessment(
+            user["id"],
+            body.get("battery_id"),
+            str(body.get("input_mode", "questionnaire")),
+            body.get("format_key"),
+            body.get("input_snapshot") if isinstance(body.get("input_snapshot"), dict) else {},
+            assessment,
+        )
+        return {"saved": True}
+
+    @app.get("/api/account/passports")
+    def account_passports(request: Request):
+        user = require_user(request)
+        return {"items": _json_safe(get_auth_store().list_passports(user["id"]))}
+
+    @app.post("/api/account/passports")
+    def account_save_passport(request: Request, body: Optional[Dict] = Body(None)):
+        user = require_user(request)
+        body = body or {}
+        passport_doc = body.get("passport")
+        if not isinstance(passport_doc, dict):
+            raise HTTPException(status_code=400, detail="Passport document is required.")
+        get_auth_store().save_passport(user["id"], passport_doc)
+        return {"saved": True}
 
     @app.get("/api/batteries")
     def batteries():
