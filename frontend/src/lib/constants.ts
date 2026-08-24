@@ -416,7 +416,7 @@ export const TEAM_NAME = "SIH-DEMO-TEAM";
 // Product identity
 // ---------------------------------------------------------------------------
 
-export const APP_NAME = "BATRIS";
+export const APP_NAME = "BATRIS.";
 export const APP_FULL_NAME = "Battery Traceability & Reliability Intelligence System";
 export const APP_TAGLINE =
   "SOH estimation · degradation analysis · safety · verifiable reuse passport";

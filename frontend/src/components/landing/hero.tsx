@@ -124,7 +124,7 @@ function FadeCurve() {
 
 export function Hero() {
   return (
-    <section className="px-3 pt-3 sm:px-5">
+    <section className="px-0 pt-3 sm:px-5">
       <div className="relative mx-auto max-w-[1320px] overflow-hidden rounded-[26px] border border-line bg-mist/60">
         <div className="grid-paper pointer-events-none absolute inset-0 opacity-45 mask-fade-b" />
 

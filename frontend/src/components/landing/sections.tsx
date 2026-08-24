@@ -148,7 +148,7 @@ export function HowItWorks() {
 export function Accuracy() {
   return (
     <Shell id="accuracy">
-      <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
+      <div className="grid min-w-0 gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
         <div>
           <Eyebrow>Measured accuracy</Eyebrow>
           <h2 className="font-display mt-5 text-[clamp(2rem,4.2vw,3.25rem)] leading-[1.02] font-bold text-balance">
@@ -167,7 +167,7 @@ export function Accuracy() {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-line bg-paper p-2 sm:p-4">
+        <div className="min-w-0 rounded-2xl border border-line bg-paper p-2 sm:p-4">
           <Table>
             <TableHeader>
               <TableRow>
