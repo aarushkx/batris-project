@@ -5,7 +5,7 @@ export const TEAM_NAME = "Team Ascend";
 // Product identity
 // ---------------------------------------------------------------------------
 
-export const APP_NAME = "BATRIS.";
+export const APP_NAME = "BATRIS";
 export const APP_FULL_NAME = "Battery Traceability & Reliability Intelligence System";
 export const APP_TAGLINE =
   "SOH estimation · degradation analysis · safety · verifiable reuse passport";
@@ -238,7 +238,7 @@ export const FOOTER_SECTIONS = [
       { href: "/#how-it-works", label: "How it works" },
       { href: "/#capabilities", label: "What it reports" },
       { href: "/#passport-trust", label: "From assessment to record" },
-      { href: "http://127.0.0.1:8000/docs", label: "API reference" },
+      { href: "https://batris-project.onrender.com/docs", label: "API reference" },
     ],
   },
 ] as const;
