@@ -6,6 +6,8 @@ The underlying models are trained and validated using the NASA Li-ion Battery Ag
 
 **View Live:** https://batris.vercel.app
 
+**Demo Video:** [Watch the BATRIS demo on YouTube](https://youtu.be/BtZZVv-KXfQ)
+
 ## Features
 
 - State of Health (SOH) estimation using XGBoost
@@ -144,7 +146,14 @@ python -m backend.batris.train_tiers
 
 ## Team
 
-Team Ascend
+**Team Ascend**
+
+- Aarush Kumar — [@aarushkx](https://github.com/aarushkx)
+- Abhinav Mehta — [@Abhinav-Mehta-456](https://github.com/Abhinav-Mehta-456)
+- Abinash — [@abinash162006](https://github.com/abinash162006)
+- Aditya Ojha — [@aditya-ojha01](https://github.com/aditya-ojha01)
+- Jagdish — [@jagdish-ai-hub](https://github.com/jagdish-ai-hub)
+- Prateek Priyanshi — [@prapti11](https://github.com/prapti11)
 
 ## License
 
