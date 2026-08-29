@@ -146,14 +146,16 @@ python -m backend.batris.train_tiers
 
 ## Team
 
-**Team Ascend**
+Developed by **Team Ascend**
 
-- Aarush Kumar — [@aarushkx](https://github.com/aarushkx)
-- Abhinav Mehta — [@Abhinav-Mehta-456](https://github.com/Abhinav-Mehta-456)
-- Abinash — [@abinash162006](https://github.com/abinash162006)
-- Aditya Ojha — [@aditya-ojha01](https://github.com/aditya-ojha01)
-- Jagdish — [@jagdish-ai-hub](https://github.com/jagdish-ai-hub)
-- Prateek Priyanshi — [@prapti11](https://github.com/prapti11)
+| Member                    | GitHub                                                     |
+| ------------------------- | ---------------------------------------------------------- |
+| **Aarush Kumar**          | [@aarushkx](https://github.com/aarushkx)                   |
+| **Abhinav Mehta**         | [@Abhinav-Mehta-456](https://github.com/Abhinav-Mehta-456) |
+| **Abinash Behera**        | [@abinash162006](https://github.com/abinash162006)         |
+| **Aditya Ojha**           | [@aditya-ojha01](https://github.com/aditya-ojha01)         |
+| **Jagdish Pattnaik**      | [@jagdish-ai-hub](https://github.com/jagdish-ai-hub)       |
+| **Prapti Priyashi Sahoo** | [@prapti11](https://github.com/prapti11)                   |
 
 ## License
 
