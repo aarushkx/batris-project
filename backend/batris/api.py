@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import logging
 import uuid
 from pathlib import Path
@@ -18,7 +19,7 @@ from fastapi.staticfiles import StaticFiles
 
 from .auth import clear_session, current_user, get_auth_store, require_user, set_session
 
-from .assess import BatteryAssessor
+from .assess import BatteryAssessor, build_lobo_trajectory_cache
 from .assess_unseen import TRAINED_CHEMISTRIES, UnseenBatteryAssessor
 from .formats import list_formats, register_custom_format
 from .onboard import (
@@ -35,7 +36,19 @@ from .passport import (
     verify_passport,
 )
 from .pdf_report import render_passport_pdf
-from .paths import CYCLES_PATH, KEYS_DIR, MODELS_DIR, PASSPORTS_DIR, PROJECT_ROOT
+from .timeline import build_timeline
+from .timeline_pdf import render_timeline_pdf
+from .marketplace import GRADE_ORDER, get_market_store
+from .paths import (
+    CYCLES_PATH,
+    KEYS_DIR,
+    MODELS_DIR,
+    PASSPORTS_DIR,
+    PLOTS_DIR,
+    PROJECT_ROOT,
+    REPORTS_DIR,
+    TIMELINES_DIR,
+)
 from .tiers import TIER_ORDER, questionnaire_schema
 
 logging.basicConfig(
@@ -92,9 +105,20 @@ def create_app(
 
     assessors: Dict[str, BatteryAssessor] = {}
 
+    # Precompute the benchmark-quality, leave-one-battery-out XGBoost
+    # trajectory once at startup. This keeps the dashboard trajectory aligned
+    # with evaluate.py without retraining a model on every request.
+    logger.info("Precomputing LOBO XGBoost trajectories for dashboard...")
+    lobo_trajectories = build_lobo_trajectory_cache(cycles)
+    logger.info("LOBO trajectory cache ready for %d batteries", len(lobo_trajectories))
+
     def get_assessor(variant: str) -> BatteryAssessor:
         if variant not in assessors:
-            assessors[variant] = BatteryAssessor(models_dir, variant=variant)
+            assessors[variant] = BatteryAssessor(
+                models_dir,
+                variant=variant,
+                lobo_trajectories=lobo_trajectories if variant == "full" else None,
+            )
         return assessors[variant]
 
     get_assessor("full")
@@ -443,6 +467,163 @@ def create_app(
             "format": fmt.as_dict(),
             "in_training_distribution": fmt.chemistry in TRAINED_CHEMISTRIES,
         })
+
+    # ---------------------------------------------------------- benchmark
+    @app.get("/api/benchmark")
+    def benchmark_results():
+        """Serve pre-computed model benchmark comparison results."""
+        path = REPORTS_DIR / "benchmark_results.json"
+        if not path.exists():
+            raise HTTPException(
+                status_code=404,
+                detail="Benchmark not yet generated. Run: python -m backend.batris.benchmark",
+            )
+        return json.loads(path.read_text(encoding="utf-8"))
+
+    @app.get("/api/benchmark/plot/{name}")
+    def benchmark_plot(name: str):
+        """Serve a benchmark comparison plot image."""
+        allowed = {"benchmark_lobo_mae.png", "benchmark_per_battery_mae.png"}
+        if name not in allowed:
+            raise HTTPException(status_code=404, detail="Unknown plot")
+        path = PLOTS_DIR / name
+        if not path.exists():
+            raise HTTPException(
+                status_code=404,
+                detail="Plot not generated yet. Run: python -m backend.batris.benchmark",
+            )
+        return FileResponse(path, media_type="image/png")
+
+    # ------------------------------------------------------- health timeline
+    # The timeline is derived from an assessment document rather than from raw
+    # data, so one endpoint serves a live dataset assessment, a user's own
+    # snapshot, and a stored marketplace listing — and none of them can
+    # disagree with each other or with a signed passport.
+
+    TIMELINES_DIR.mkdir(parents=True, exist_ok=True)
+
+    def _timeline_from_body(body: Optional[Dict]) -> Dict:
+        body = body or {}
+        assessment = body.get("assessment") if isinstance(body.get("assessment"), dict) else None
+        if assessment is None and isinstance(body.get("health"), dict):
+            # A bare assessment document is accepted as well.
+            assessment = body
+        if not isinstance(assessment, dict):
+            raise HTTPException(
+                status_code=400,
+                detail="Request body must contain an assessment document.",
+            )
+        try:
+            return build_timeline(assessment)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    @app.post("/api/timeline")
+    def timeline(body: Optional[Dict] = Body(None)):
+        return _json_safe(_timeline_from_body(body))
+
+    @app.post("/api/timeline/pdf")
+    def timeline_pdf(body: Optional[Dict] = Body(None)):
+        """Render a timeline to PDF and store it behind a stable URL."""
+        body = body or {}
+        document = body.get("timeline") if isinstance(body.get("timeline"), dict) else None
+        if document is None:
+            document = _timeline_from_body(body)
+
+        timeline_id = str(uuid.uuid4())
+        try:
+            pdf_bytes = render_timeline_pdf(document)
+        except Exception as exc:  # noqa: BLE001 - surfaced to the caller
+            raise HTTPException(
+                status_code=400, detail=f"Could not render the timeline PDF: {exc}"
+            ) from exc
+
+        (TIMELINES_DIR / f"{timeline_id}.pdf").write_bytes(pdf_bytes)
+        return {
+            "timeline_id": timeline_id,
+            "battery_id": document.get("battery_id"),
+            "pdf_url": f"/api/timeline/pdf/{timeline_id}",
+        }
+
+    @app.get("/api/timeline/pdf/{timeline_id}")
+    def get_timeline_pdf(timeline_id: str):
+        pdf_path = TIMELINES_DIR / f"{timeline_id}.pdf"
+        if not pdf_path.exists():
+            raise HTTPException(
+                status_code=404,
+                detail="No PDF for this timeline yet. Generate it via POST /api/timeline/pdf.",
+            )
+        return FileResponse(
+            pdf_path,
+            media_type="application/pdf",
+            filename=f"battery_health_timeline_{timeline_id}.pdf",
+        )
+
+    # Registered after /api/timeline/pdf so "pdf" is never read as a battery id.
+    @app.get("/api/timeline/{battery_id}")
+    def timeline_for_battery(
+        battery_id: str,
+        cycle: Optional[int] = Query(None),
+        variant: str = Query("full"),
+    ):
+        """Convenience route for the batteries already in the dataset."""
+        history = cycles[cycles["battery_id"] == battery_id]
+        if history.empty:
+            raise HTTPException(status_code=404, detail=f"Unknown battery {battery_id!r}")
+        if variant not in ("full", "provenance_free"):
+            raise HTTPException(status_code=400, detail=f"Unknown variant {variant!r}")
+        try:
+            assessment = get_assessor(variant).assess(history, cycle_index=cycle)
+            return _json_safe(build_timeline(assessment))
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    # --------------------------------------------------- second-life market
+    # Browsing is public; publishing requires an account, because a listing
+    # carries the seller's name and email as the only route to contact them.
+
+    @app.get("/api/market/listings")
+    def market_listings(
+        grade: Optional[str] = Query(None),
+        chemistry: Optional[str] = Query(None),
+        min_soh: Optional[float] = Query(None),
+    ):
+        result = get_market_store().browse(
+            grade=grade, chemistry=chemistry, min_soh_percent=min_soh
+        )
+        result["grade_order"] = list(GRADE_ORDER)
+        return _json_safe(result)
+
+    @app.get("/api/market/mine")
+    def market_mine(request: Request):
+        user = require_user(request)
+        return {"items": _json_safe(get_market_store().for_seller(user["id"]))}
+
+    @app.post("/api/market/listings")
+    def market_publish(request: Request, body: Optional[Dict] = Body(None)):
+        user = require_user(request)
+        body = body or {}
+        try:
+            listing = get_market_store().create(
+                user,
+                body.get("assessment"),
+                title=body.get("title"),
+                location=body.get("location"),
+                notes=body.get("notes"),
+                passport=body.get("passport"),
+            )
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        return _json_safe({"published": True, "listing": listing})
+
+    @app.get("/api/market/listings/{listing_id}")
+    def market_listing_detail(listing_id: str):
+        return _json_safe(get_market_store().get(listing_id))
+
+    @app.delete("/api/market/listings/{listing_id}")
+    def market_withdraw(listing_id: str, request: Request):
+        user = require_user(request)
+        return _json_safe(get_market_store().withdraw(listing_id, user["id"]))
 
     @app.exception_handler(HTTPException)
     async def http_error(request: Request, exc: HTTPException):

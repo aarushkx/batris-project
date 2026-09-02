@@ -29,6 +29,8 @@ import {
   SubHeading,
 } from "@/components/shared/primitives";
 import { HeadlineMetrics } from "@/components/dashboard/headline-metrics";
+import { HealthTimeline } from "@/components/dashboard/health-timeline";
+import { PublishListingPanel } from "@/components/market/publish-panel";
 import { PassportPanel } from "@/components/dashboard/passport-panel";
 import { TrajectoryChart } from "@/components/dashboard/trajectory-chart";
 import { assessBattery, getBatteries, issuePassport } from "@/lib/api";
@@ -280,11 +282,17 @@ function FleetResults({
       {a.trajectory ? (
         <SectionCard
           title="Degradation trajectory"
-          description={`${a.battery_id} · ${a.total_cycles_observed} cycles observed · assessed at cycle ${a.cycle_index}`}
+          description={`${a.battery_id} · ${a.total_cycles_observed} cycles observed · assessed at cycle ${a.cycle_index} · ${a.trajectory?.method ?? "XGBoost"}`}
         >
+          <div className="mb-3 rounded-xl border border-ink/10 bg-ink/5 px-3 py-2 text-[12px] leading-5 text-ink-soft">
+            <span className="font-semibold text-ink">Out-of-sample validation:</span>{" "}{a.trajectory.description}
+          </div>
           <TrajectoryChart trajectory={a.trajectory} markCycle={a.cycle_index} />
         </SectionCard>
       ) : null}
+
+      {/* -------------------------------------------------------- timeline */}
+      <HealthTimeline assessment={a} id="timeline" />
 
       {/* --------------------------------------------------------- factors */}
       <SectionCard
@@ -321,6 +329,9 @@ function FleetResults({
         issue={issue}
         allowTamper
       />
+
+      {/* ---------------------------------------------------- second life */}
+      <PublishListingPanel assessment={a} id="market" />
 
       {/* ------------------------------------------------------ provenance */}
       <SectionCard

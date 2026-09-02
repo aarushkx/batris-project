@@ -56,6 +56,8 @@ import {
   SubHeading,
 } from "@/components/shared/primitives";
 import { HeadlineMetrics } from "@/components/dashboard/headline-metrics";
+import { HealthTimeline } from "@/components/dashboard/health-timeline";
+import { PublishListingPanel } from "@/components/market/publish-panel";
 import { PassportPanel } from "@/components/dashboard/passport-panel";
 import {
   assessOwnBattery,
@@ -910,6 +912,9 @@ function OwnResults({
         anomalySub={`${detectorsRun} of 3 detectors could run`}
       />
 
+      {/* -------------------------------------------------------- timeline */}
+      <HealthTimeline assessment={a} id="timeline" />
+
       {/* --------------------------------------------------- unavailable */}
       <SectionCard
         title="What could not be assessed"
@@ -954,6 +959,9 @@ function OwnResults({
 
       {/* ------------------------------------------------------ passport */}
       <PassportPanel nextStep={a.second_life.next_step} issue={issue} />
+
+      {/* ---------------------------------------------------- second life */}
+      <PublishListingPanel assessment={a} id="market" />
 
       {/* ---------------------------------------------------- provenance */}
       <SectionCard

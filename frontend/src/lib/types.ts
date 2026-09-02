@@ -174,6 +174,11 @@ export interface ModelProvenance {
 }
 
 export interface Trajectory {
+  /** Set by the assessment API; omitted when a chart is built client-side. */
+  method?: string;
+  description?: string;
+  /** Per-cycle ISO timestamps, used to date health-timeline events. */
+  timestamp?: (string | null)[];
   cycle_index: number[];
   estimated_soh: number[];
   measured_soh: (number | null)[];
@@ -341,4 +346,250 @@ export interface RegisterFormatResult {
   registered: boolean;
   format: BatteryFormat;
   in_training_distribution: boolean;
+}
+
+// --------------------------------------------------------------------------
+// Benchmark
+// --------------------------------------------------------------------------
+
+export interface BenchmarkModelMetrics {
+  mae: number;
+  rmse: number;
+  r2: number;
+  max_abs_error: number;
+  bias: number;
+  mae_soh_points: number;
+  rmse_soh_points: number;
+  max_error_soh_points: number;
+  bias_soh_points: number;
+}
+
+/** Per-cycle measured-vs-estimated SOH for one (model, held-out battery) fold. */
+export interface BenchmarkTrajectory {
+  cycle_index: number[];
+  measured_soh: number[];
+  estimated_soh: number[];
+}
+
+export interface BenchmarkModelResult {
+  model_key: string;
+  model_display_name: string;
+  overall: BenchmarkModelMetrics;
+  per_battery: Record<string, BenchmarkModelMetrics>;
+  /** Present once the benchmark has been generated with trajectory capture. */
+  trajectories?: Record<string, BenchmarkTrajectory>;
+}
+
+export interface BenchmarkResults {
+  n_cycles: number;
+  batteries: string[];
+  n_batteries: number;
+  features_used: number;
+  models: BenchmarkModelResult[];
+  best_model: string;
+  best_model_display_name: string;
+  generated_at: string;
+}
+
+// --------------------------------------------------------------------------
+// Health timeline
+// --------------------------------------------------------------------------
+
+export type TimelineSeverity = "critical" | "warning" | "good" | "info";
+export type HealthPhase = "healthy" | "warning" | "critical";
+
+export type TimelineEventKind =
+  | "observation_start"
+  | "state_change"
+  | "milestone"
+  | "fade_acceleration"
+  | "anomaly_first"
+  | "anomaly_cluster"
+  | "thermal_excursion"
+  | "thermal_clear"
+  | "anomaly_finding"
+  | "degradation_attribution"
+  | "assessment"
+  | "projection"
+  | "unobserved_history";
+
+export interface TimelineEvent {
+  id: string;
+  kind: TimelineEventKind | string;
+  severity: TimelineSeverity;
+  title: string;
+  detail: string;
+  /** Null for forward-looking entries, which carry no cycle. */
+  cycle: number | null;
+  date: string | null;
+  soh_percent: number | null;
+  phase: HealthPhase | null;
+  evidence: Record<string, unknown>;
+}
+
+export interface TimelinePhase {
+  state: string;
+  label: string;
+  phase: HealthPhase;
+  meaning: string;
+  from_cycle: number | null;
+  to_cycle: number | null;
+  duration_cycles: number | null;
+  entered_at_soh_percent: number | null;
+  entered_on: string | null;
+  reuse_grade: string;
+  is_current: boolean;
+}
+
+export interface TimelineProjection {
+  target_label: string;
+  target_soh_percent: number;
+  fade_points_per_100_cycles: number;
+  cycles_remaining: number;
+  reference_cycle: number | null;
+}
+
+export interface TimelineSummary {
+  battery_id: string;
+  source: "trajectory" | "snapshot";
+  cycles_observed: number | null;
+  first_cycle: number | null;
+  last_cycle: number | null;
+  assessed_at_cycle: number | null;
+  soh_at_first_observation_percent: number | null;
+  soh_now_percent: number | null;
+  soh_points_lost: number | null;
+  fade_rate_soh_points_per_100_cycles: number | null;
+  current_state: string;
+  current_state_label: string;
+  current_phase: HealthPhase;
+  cycles_in_current_state: number | null;
+  reuse_grade: string | null;
+  risk_band: string;
+  n_events: number;
+  n_state_changes: number;
+  n_warnings: number;
+  n_critical: number;
+  n_anomalous_cycles: number;
+  first_event_date: string | null;
+  last_event_date: string | null;
+  headline: string;
+  projection: TimelineProjection | null;
+}
+
+export interface TimelineSeries {
+  cycle_index: number[];
+  estimated_soh: (number | null)[];
+  measured_soh: (number | null)[];
+  anomalous_cycles: number[];
+  method: string | null;
+}
+
+export interface Timeline {
+  battery_id: string;
+  generated_at_utc: string;
+  format: {
+    key: string | null;
+    display_name: string | null;
+    chemistry: string | null;
+    rated_capacity_ah: number | null;
+    eol_soh_percent: number;
+    second_life_floor_soh_percent: number;
+  };
+  summary: TimelineSummary;
+  states: TimelinePhase[];
+  events: TimelineEvent[];
+  series: TimelineSeries | null;
+  thresholds: {
+    as_new_soh_percent: number;
+    eol_soh_percent: number;
+    grade_b_floor_soh_percent: number;
+    reuse_floor_soh_percent: number;
+  };
+  method_note: string;
+}
+
+export interface TimelinePdf {
+  timeline_id: string;
+  battery_id: string | null;
+  /** Path (relative to the API origin) that serves the generated PDF. */
+  pdf_url: string;
+}
+
+// --------------------------------------------------------------------------
+// Second-life market
+// --------------------------------------------------------------------------
+
+export type ReuseGrade = "A" | "B" | "C" | "RECYCLE";
+
+export interface MarketSeller {
+  name: string;
+  email: string;
+}
+
+export interface MarketListing {
+  listing_id: string;
+  status: "active" | "withdrawn" | string;
+  battery_id: string;
+  title: string | null;
+  location: string | null;
+  notes: string | null;
+  is_reference_fleet: boolean;
+  seller: MarketSeller;
+
+  format_key: string | null;
+  format_display_name: string | null;
+  chemistry: string;
+  form_factor: string | null;
+  rated_capacity_ah: number | null;
+  nominal_voltage_v: number | null;
+
+  soh: number;
+  soh_percent: number;
+  soh_lower_percent: number | null;
+  soh_upper_percent: number | null;
+  health_label: string | null;
+  retained_capacity_ah: number | null;
+  remaining_energy_wh: number | null;
+  fade_rate_soh_points_per_100_cycles: number | null;
+
+  grade: ReuseGrade | string;
+  grade_recommendation: string | null;
+  grade_rationale: string | null;
+  grade_confidence: string | null;
+  grade_is_ambiguous: boolean;
+  worst_case_grade: string | null;
+  best_case_grade: string | null;
+  next_step: string | null;
+  safety_override_applied: boolean;
+
+  risk_band: string | null;
+  risk_score: number | null;
+  anomaly_max_severity: string | null;
+  anomaly_count: number;
+
+  assessed_at_cycle: number | null;
+  cycles_observed: number | null;
+  assessed_at: string | null;
+  has_trajectory: boolean;
+  is_unseen_battery: boolean;
+
+  passport_id: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+/** Detail response: the listing plus the assessment it was derived from. */
+export interface MarketListingDetail extends MarketListing {
+  assessment: Assessment | null;
+  passport: Passport | null;
+}
+
+export interface MarketBrowseResult {
+  items: MarketListing[];
+  counts: Record<string, number>;
+  total: number;
+  filtered: number;
+  chemistries: string[];
+  grade_order: string[];
 }

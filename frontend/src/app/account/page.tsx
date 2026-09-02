@@ -1,126 +1,3 @@
-// "use client";
-
-// import * as React from "react";
-// import { useRouter } from "next/navigation";
-// import { ArrowUpRight, FileSignature, LogOut, ShieldCheck } from "lucide-react";
-// import { toast } from "sonner";
-// import { Button } from "@/components/ui/button";
-// import { Badge } from "@/components/ui/badge";
-// import { SectionCard, KeyValue, KeyValueGrid } from "@/components/shared/primitives";
-// import { getAccountHistory, useAuth } from "@/lib/auth";
-
-// export default function AccountPage() {
-//   const router = useRouter();
-//   const { user, loading, logout } = useAuth();
-//   const [history, setHistory] = React.useState<{ assessments: Array<Record<string, any>>; passports: Array<Record<string, any>> } | null>(null);
-//   const [busy, setBusy] = React.useState(true);
-
-//   React.useEffect(() => {
-//     if (loading) return;
-//     if (!user) {
-//       router.replace("/login?next=%2Faccount");
-//       return;
-//     }
-//     getAccountHistory()
-//       .then(setHistory)
-//       .catch((error) => toast.error("Could not load account history", { description: error instanceof Error ? error.message : String(error) }))
-//       .finally(() => setBusy(false));
-//   }, [loading, router, user]);
-
-//   async function handleLogout() {
-//     await logout();
-//     router.replace("/");
-//   }
-
-//   if (loading || !user || busy) {
-//     return <div className="mx-auto max-w-[1100px] px-5 py-16 text-sm text-ink-soft">Loading your account…</div>;
-//   }
-
-//   return (
-//     <div className="mx-auto max-w-[1100px] px-5 py-10 sm:px-8 sm:py-14">
-//       <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
-//         <div>
-//           <p className="eyebrow">My BATRIS</p>
-//           <h1 className="mt-1 font-display text-[clamp(2rem,4vw,3rem)] font-bold tracking-[-0.045em]">{user.name}</h1>
-//           <p className="mt-2 text-[13px] text-ink-soft">{user.email}</p>
-//         </div>
-//         <Button variant="outline" onClick={handleLogout}><LogOut /> Sign out</Button>
-//       </div>
-
-//       <div className="mt-8 grid gap-3 sm:grid-cols-3">
-//         <SectionCard title="Assessments" description="Saved analysis snapshots">
-//           <p className="tabular font-display text-3xl font-bold">{history?.assessments.length ?? 0}</p>
-//         </SectionCard>
-//         <SectionCard title="Passports" description="Signed documents saved to your account">
-//           <p className="tabular font-display text-3xl font-bold">{history?.passports.length ?? 0}</p>
-//         </SectionCard>
-//         <SectionCard title="Account" description="Your identity is separate from passport trust">
-//           <div className="flex items-center gap-2 text-[13px] font-medium"><ShieldCheck className="size-4 text-estimated" /> Verified session</div>
-//         </SectionCard>
-//       </div>
-
-//       <div className="mt-3 grid gap-3 lg:grid-cols-2">
-//         <SectionCard title="Saved assessments" description="The result and non-file inputs you chose to keep.">
-//           {history?.assessments.length ? (
-//             <div className="grid gap-2">
-//               {history.assessments.map((item) => {
-//                 const health = item.assessment?.health;
-//                 return (
-//                   <div key={item.id} className="rounded-xl border border-line bg-mist/40 p-3.5">
-//                     <div className="flex items-start justify-between gap-3">
-//                       <div>
-//                         <p className="text-[13px] font-medium">{item.battery_id}</p>
-//                         <p className="mt-1 text-[11.5px] text-ink-soft">{item.input_mode} · {item.format_key ?? "default format"}</p>
-//                       </div>
-//                       {health?.soh_percent != null ? <Badge variant="estimated">{health.soh_percent.toFixed(1)}% SOH</Badge> : null}
-//                     </div>
-//                     <p className="mt-2 text-[11px] text-ink-soft">Saved {new Date(item.created_at).toLocaleString()}</p>
-//                   </div>
-//                 );
-//               })}
-//             </div>
-//           ) : (
-//             <p className="text-[12.5px] text-ink-soft">Nothing saved yet. Run an assessment and choose “Save to my account”.</p>
-//           )}
-//         </SectionCard>
-
-//         <SectionCard title="Saved passports" description="Portable records you can keep alongside your assessments.">
-//           {history?.passports.length ? (
-//             <div className="grid gap-2">
-//               {history.passports.map((item) => {
-//                 const passport = item.passport?.payload;
-//                 return (
-//                   <div key={item.passport_id} className="rounded-xl border border-line bg-mist/40 p-3.5">
-//                     <div className="flex items-start justify-between gap-3">
-//                       <div>
-//                         <p className="text-[13px] font-medium">{item.battery_id ?? "Battery"}</p>
-//                         <p className="mt-1 break-all font-mono text-[10.5px] text-ink-soft">{item.passport_id}</p>
-//                       </div>
-//                       <FileSignature className="size-4 text-estimated" />
-//                     </div>
-//                     <div className="mt-3 grid grid-cols-2 gap-2">
-//                       <KeyValue small label="SOH" value={passport?.health_estimate?.soh_percent != null ? `${passport.health_estimate.soh_percent}%` : "—"} />
-//                       <KeyValue small label="Grade" value={passport?.second_life_assessment?.grade ?? "—"} />
-//                     </div>
-//                     <p className="mt-3 text-[11px] text-ink-soft">Saved {new Date(item.created_at).toLocaleString()}</p>
-//                   </div>
-//                 );
-//               })}
-//             </div>
-//           ) : (
-//             <p className="text-[12.5px] text-ink-soft">No signed passports saved yet. Issue one from an assessment and save it from the passport panel.</p>
-//           )}
-//         </SectionCard>
-//       </div>
-
-//       <div className="mt-6 flex flex-wrap gap-2">
-//         <Button onClick={() => router.push("/dashboard?view=own")}>Assess a battery <ArrowUpRight /></Button>
-//         <Button variant="outline" onClick={() => router.push("/dashboard")}>Open fleet dashboard</Button>
-//       </div>
-//     </div>
-//   );
-// }
-
 "use client";
 
 import * as React from "react";
@@ -140,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { JsonBlock } from "@/components/shared/analysis";
 import { SectionCard, KeyValue } from "@/components/shared/primitives";
+import { MyListings } from "@/components/market/my-listings";
 import { downloadPassportPdf } from "@/lib/api";
 import { downloadJSON } from "@/lib/format";
 import { getAccountHistory, useAuth } from "@/lib/auth";
@@ -381,6 +259,10 @@ export default function AccountPage() {
             <p className="text-[12.5px] text-ink-soft">No signed passports saved yet. Issue one from an assessment and save it from the passport panel.</p>
           )}
         </SectionCard>
+      </div>
+
+      <div className="mt-3">
+        <MyListings id="listings" />
       </div>
 
       <div className="mt-3 text-[11.5px] text-ink-soft">Showing the 25 most recent saved items in each section.</div>

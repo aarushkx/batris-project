@@ -20,20 +20,53 @@ import pandas as pd
 from .explain import EXPLANATION_CAVEAT, explain_prediction, summarise_factors
 from .formats import get_format
 from .models.anomaly import AnomalyDetector
-from .models.soh import SOHModel
+from .models.soh import DEFAULT_PARAMS, SOHModel
+from .features import SOH_FEATURES
 from .passport import build_passport, sign_passport
 from .safety import assess_safety, grade_second_life
 
 logger = logging.getLogger(__name__)
 
 
+def build_lobo_trajectory_cache(df: pd.DataFrame) -> Dict[str, np.ndarray]:
+    """Precompute the exact LOBO XGBoost predictions used by evaluate.py.
+
+    This intentionally mirrors evaluate.lobo_predictions: one XGBoost model is
+    fit for each held-out battery using the other batteries as training data.
+    """
+    import xgboost as xgb
+
+    required = {"battery_id", "soh", *SOH_FEATURES}
+    missing = sorted(required - set(df.columns))
+    if missing:
+        raise ValueError(f"Cannot build LOBO cache; missing columns: {missing}")
+
+    features = list(SOH_FEATURES)
+    cache: Dict[str, np.ndarray] = {}
+
+    for held_out in sorted(df["battery_id"].unique()):
+        train = df[df["battery_id"] != held_out]
+        test = df[df["battery_id"] == held_out].sort_values("cycle_index")
+
+        model = xgb.XGBRegressor(
+            objective="reg:squarederror",
+            **DEFAULT_PARAMS,
+        )
+        model.fit(train[features], train["soh"])
+        cache[str(held_out)] = model.predict(test[features])
+
+    return cache
+
+
 class BatteryAssessor:
     """Loads the trained models once and applies them to battery histories."""
 
     def __init__(self, models_dir: Path | str = MODELS_DIR,
-                 variant: str = "full"):
+                 variant: str = "full",
+                 lobo_trajectories: Optional[Dict[str, np.ndarray]] = None):
         self.models_dir = Path(models_dir)
         self.variant = variant
+        self.lobo_trajectories = lobo_trajectories or {}
         self.soh_model = SOHModel.load(self.models_dir, variant=variant)
         self.anomaly_detector = AnomalyDetector.load(self.models_dir)
         logger.info("Loaded models (SOH variant=%s) from %s",
@@ -94,10 +127,26 @@ class BatteryAssessor:
         prediction = self.soh_model.predict_full(target)[0]
 
         # -- trajectory of estimates ----------------------------------------
-        # Calculates SOH over the complete battery history.
-        # This allows the dashboard to compare predicted and actual trends and avoids
-        # depending on values that may not be available during deployment.
-        estimated_series = self.soh_model.predict(history)
+        # The dashboard trajectory is intentionally OUT-OF-SAMPLE for the
+        # benchmark dataset: for a selected battery, its battery is held out
+        # while XGBoost is trained on the other batteries. This is the same
+        # protocol used by evaluate.py, so the trajectory is a genuine
+        # generalization result rather than an in-sample fit.
+        lobo_series = self.lobo_trajectories.get(battery_id)
+        if self.variant == "full" and lobo_series is not None:
+            estimated_series = np.asarray(lobo_series, dtype=float)
+            trajectory_method = "LOBO XGBoost (battery held out)"
+            trajectory_description = (
+                f"{battery_id} was excluded from training; XGBoost was trained "
+                "on the other batteries and then used to predict this battery."
+            )
+        else:
+            estimated_series = self.soh_model.predict(history)
+            trajectory_method = "Full XGBoost (known history)"
+            trajectory_description = (
+                "Trajectory from the full trained model; this is not an out-of-sample "
+                "generalization curve."
+            )
         fade_slope = self._fade_slope(estimated_series[: position + 1])
 
         # -- anomalies -------------------------------------------------------
@@ -218,8 +267,11 @@ class BatteryAssessor:
                 ),
             },
 
-            "trajectory": self._trajectory(history, estimated_series, anomaly_results)
-            if include_trajectory else None,
+            "trajectory": self._trajectory(
+                history, estimated_series, anomaly_results,
+                method=trajectory_method,
+                description=trajectory_description,
+            ) if include_trajectory else None,
         }
 
     @staticmethod
@@ -235,11 +287,29 @@ class BatteryAssessor:
         return "End of usable life"
 
     @staticmethod
-    def _trajectory(history: pd.DataFrame, estimated: np.ndarray,
-                    anomaly_results: List) -> Dict:
+    def _trajectory(
+        history: pd.DataFrame,
+        estimated: np.ndarray,
+        anomaly_results: List,
+        method: str = "Full XGBoost (known history)",
+        description: str = "",
+    ) -> Dict:
         """Series for the dashboard chart."""
         measured = history["audit_capacity_ah"] / history["rated_capacity_ah"]
+        # Per-cycle timestamps are what let the health timeline place an event
+        # on a date rather than only on a cycle number.
+        if "timestamp" in history.columns:
+            stamps = [
+                None if pd.isna(value) else str(pd.Timestamp(value).isoformat())
+                for value in history["timestamp"]
+            ]
+        else:
+            stamps = [None] * len(history)
+
         return {
+            "method": method,
+            "description": description,
+            "timestamp": stamps,
             "cycle_index": history["cycle_index"].astype(int).tolist(),
             "estimated_soh": [round(float(v), 4) for v in estimated],
             "measured_soh": [
@@ -250,9 +320,19 @@ class BatteryAssessor:
                 int(history["cycle_index"].iloc[i])
                 for i, r in enumerate(anomaly_results) if r.is_anomalous
             ],
+            # Peak of the charge and discharge maxima, matching what
+            # assess_safety() is given for the assessed cycle, so the timeline
+            # cannot report a lower peak than the safety module reasoned about.
             "peak_temp_c": [
                 None if not np.isfinite(v) else round(float(v), 1)
-                for v in history["audit_dis_temp_max_c"]
+                for v in np.fmax(
+                    history.get(
+                        "ch_temp_max_c", pd.Series(np.nan, index=history.index)
+                    ).to_numpy(dtype=float),
+                    history.get(
+                        "audit_dis_temp_max_c", pd.Series(np.nan, index=history.index)
+                    ).to_numpy(dtype=float),
+                )
             ],
         }
 

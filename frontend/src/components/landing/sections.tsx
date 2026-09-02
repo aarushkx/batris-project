@@ -157,10 +157,16 @@ export function Accuracy() {
           <p className="mt-5 text-[14.5px] leading-relaxed text-ink-soft">
             {ACCURACY_NOTE}
           </p>
-          <div className="mt-7">
+          <div className="mt-7 flex flex-wrap gap-2">
             <Button variant="outline" asChild>
               <Link href="/dashboard?view=own">
                 See which tier your data reaches
+                <ArrowUpRight />
+              </Link>
+            </Button>
+            <Button variant="ghost" asChild>
+              <Link href="/benchmark#accuracy">
+                How close the estimates land
                 <ArrowUpRight />
               </Link>
             </Button>

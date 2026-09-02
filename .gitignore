@@ -4,6 +4,7 @@ __pycache__/
 venv/
 generated/keys/
 generated/passports/
+generated/timelines/
 data/raw/generic_csv/
 .DS_Store
 .env

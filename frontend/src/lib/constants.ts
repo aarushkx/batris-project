@@ -47,6 +47,13 @@ export const API_ROUTES = {
   authMe: `${API_BASE}/auth/me`,
   accountAssessments: `${API_BASE}/account/assessments`,
   accountPassports: `${API_BASE}/account/passports`,
+  benchmark: `${API_BASE}/benchmark`,
+  timeline: `${API_BASE}/timeline`,
+  timelineFor: (batteryId: string) => `${API_BASE}/timeline/${batteryId}`,
+  timelinePdf: `${API_BASE}/timeline/pdf`,
+  marketListings: `${API_BASE}/market/listings`,
+  marketListing: (listingId: string) => `${API_BASE}/market/listings/${listingId}`,
+  marketMine: `${API_BASE}/market/mine`,
 } as const;
 
 // ---------------------------------------------------------------------------
@@ -124,7 +131,7 @@ export const CHART = {
 
 export const CHART_LEGEND = [
   { key: "measured", label: "Measured SOH (reference discharge)" },
-  { key: "estimated", label: "Estimated SOH (model)" },
+  { key: "estimated", label: "Estimated SOH (held-out XGBoost)" },
   { key: "eol", label: "80% end of first life" },
   { key: "anomaly", label: "Anomalous cycle" },
 ] as const;
@@ -220,6 +227,8 @@ export const NAV_LINKS = [
   { href: "/#capabilities", label: "Capabilities" },
   { href: "/#accuracy", label: "Accuracy" },
   { href: "/#passport", label: "Passport" },
+  { href: "/benchmark", label: "Benchmark" },
+  { href: "/market", label: "Second-life market" },
 ] as const;
 
 export const FOOTER_SECTIONS = [
@@ -229,6 +238,9 @@ export const FOOTER_SECTIONS = [
       { href: "/dashboard", label: "Dashboard" },
       { href: "/dashboard?view=own", label: "Assess my battery" },
       { href: "/#accuracy", label: "Measured accuracy" },
+      { href: "/benchmark", label: "Model benchmark" },
+      { href: "/benchmark#accuracy", label: "Prediction accuracy" },
+      { href: "/market", label: "Second-life market" },
       { href: "/#passport", label: "Signed passports" },
     ],
   },
@@ -415,3 +427,100 @@ export const CTA = {
 
 export const DISCLAIMER =
   "Estimates are not certified test results. Binding reuse, warranty or disposal decisions require accredited testing.";
+
+// ---------------------------------------------------------------------------
+// Health timeline
+// ---------------------------------------------------------------------------
+
+export const TIMELINE = {
+  eyebrow: "Battery health timeline",
+  title: "How and when this battery got here",
+  description:
+    "The dashboard reports the battery's condition now. This reconstructs the route it took: when the estimate crossed each reuse threshold, when the fade rate accelerated, which cycles the detectors flagged, and what the present assessment concludes.",
+  emptyNote:
+    "Run an assessment to build the timeline. Batteries with a per-cycle history produce dated transitions; a single-snapshot assessment reports only what that one observation establishes.",
+} as const;
+
+export const TIMELINE_PHASE = {
+  healthy: { label: "Healthy", colour: "var(--good)" },
+  warning: { label: "Warning", colour: "var(--warn)" },
+  critical: { label: "Critical", colour: "var(--bad)" },
+} as const;
+
+export const TIMELINE_FILTERS = [
+  { value: "all", label: "All events" },
+  { value: "attention", label: "Warnings & critical" },
+  { value: "state_change", label: "Condition changes" },
+] as const;
+
+// ---------------------------------------------------------------------------
+// Second-life market
+// ---------------------------------------------------------------------------
+
+export const MARKET = {
+  eyebrow: "Second-life market",
+  title: "Battery inventory, graded for reuse",
+  body: "Every card below is generated from an assessment this platform produced. Sellers supply the context — where the pack is and what it came out of — but no health figure, grade or risk band on a listing can be typed in by hand.",
+  emptyTitle: "No batteries listed yet",
+  emptyBody:
+    "Once someone assesses a battery and publishes it, it appears here. Assess a battery to add the first listing.",
+  noMatchTitle: "No batteries match these filters",
+  noMatchBody: "Widen the reuse grade, chemistry or retained-SOH filters to see more of the inventory.",
+  contactNote:
+    "BATRIS does not handle payment, pricing or escrow. Contact the seller directly to agree terms.",
+  publishTitle: "Offer this battery for reuse",
+  publishBody:
+    "Publishing copies this assessment onto a public listing. Your name and email become visible to everyone browsing the market, because they are the only way a buyer can reach you. You can withdraw the listing at any time from your account.",
+} as const;
+
+export const REUSE_GRADES = [
+  {
+    value: "A",
+    label: "Grade A",
+    tone: "good",
+    headline: "First-life ready",
+    summary: "At or above the 80% end-of-first-life threshold.",
+  },
+  {
+    value: "B",
+    label: "Grade B",
+    tone: "signal",
+    headline: "Second-life ready",
+    summary: "A strong candidate for stationary storage.",
+  },
+  {
+    value: "C",
+    label: "Grade C",
+    tone: "warn",
+    headline: "Specialised reuse",
+    summary: "Use only in low-power, attended applications.",
+  },
+  {
+    value: "RECYCLE",
+    label: "Recycle",
+    tone: "bad",
+    headline: "Material recovery",
+    summary: "Not suitable for reuse. Route to material recovery.",
+  },
+] as const;
+
+export const CHEMISTRY_FILTER_ALL = "all";
+export const GRADE_FILTER_ALL = "all";
+
+// ---------------------------------------------------------------------------
+// Prediction accuracy (benchmark page)
+// ---------------------------------------------------------------------------
+
+/**
+ * "What is your accuracy?" has no single answer for a regression model, so the
+ * benchmark page reports error, agreement and tolerance bands together. These
+ * are the bands it reports against.
+ */
+export const ACCURACY_TOLERANCES = [1, 2, 3, 5] as const;
+
+export const ACCURACY_SECTION = {
+  eyebrow: "Prediction accuracy",
+  title: "How close the estimates actually land",
+  body: "Mean absolute error answers how far a typical prediction sits from the measured value. On its own that is hard to act on, so the same held-out predictions are also reported as the share landing within a given tolerance, and plotted against ground truth.",
+  note: "Every figure here is computed from the leave-one-battery-out predictions in the benchmark run: each point comes from a model that never saw that battery during training. Nothing on this page is an in-sample fit.",
+} as const;
