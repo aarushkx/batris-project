@@ -227,7 +227,7 @@ export const NAV_LINKS = [
   { href: "/#capabilities", label: "Capabilities" },
   { href: "/#accuracy", label: "Accuracy" },
   { href: "/#passport", label: "Passport" },
-  { href: "/benchmark", label: "Benchmark" },
+  // { href: "/benchmark", label: "Benchmark" },
   { href: "/market", label: "Second-life market" },
 ] as const;
 
