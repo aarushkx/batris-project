@@ -220,7 +220,6 @@ Developed by **Team Ascend**
 | **Abhinav Mehta**         | [@Abhinav-Mehta-456](https://github.com/Abhinav-Mehta-456)         |
 | **Abinash Behera**        | [@abinash162006](https://github.com/abinash162006)                 |
 | **Aditya Ojha**           | [@aditya-ojha01](https://github.com/aditya-ojha01)                 |
-| **Jagdish Pattnaik**      | [@jagdish-ai-hub](https://github.com/jagdish-ai-hub)               |
 | **Prapti Prayashi Sahoo** | [@praptiprayashi11-lang](https://github.com/praptiprayashi11-lang) |
 
 ## License
